@@ -251,3 +251,10 @@ th {
 .texteRouge {
     color: #F44336;
 }
+
+.VersionSite {
+    position: absolute;
+    right: 30px;
+    bottom: 20px;
+    color: #777777
+}
