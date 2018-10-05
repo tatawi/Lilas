@@ -1,0 +1,695 @@
+﻿
+@{
+    ViewBag.Title = "MaConsommation";
+}
+
+<script type="text/javascript" src="@Url.Content("~/Scripts/Chart.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/Chart.bundle.min.js")"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        CacherChamps();
+
+        showGif();
+        RefreshTableauReleves();
+        RefreshTableauConsoChauffageAnnee();
+        LoadConsoChauffagePie();
+        RefreshTableauConsoChauffage();
+        hideGif();
+
+        
+    });
+
+
+    function CacherChamps() {
+        var type = '@ViewBag.Type';
+
+        if (type == 'T2') {
+            document.getElementById('div_consoChauffage_sa-ch').style.display = 'none';
+            document.getElementById('div_consoChauffage_ch2').style.display = 'none';
+            document.getElementById('div_consoChauffage_ch3').style.display = 'none';
+        }
+
+            if (type == 'T3') {
+                document.getElementById('div_consoChauffage_sa-ch').style.display = 'none';
+                document.getElementById('div_consoChauffage_ch3').style.display = 'none';
+            }
+    }
+
+
+    function ChangeOnglet(onglet, contenu) {
+        document.getElementById('content_1').style.display = 'none';
+        document.getElementById('content_2').style.display = 'none';
+        document.getElementById(contenu).style.display = 'block';
+
+        document.getElementById('tab_1').className = '';
+        document.getElementById('tab_2').className = '';
+        document.getElementById(onglet).className = 'active';
+    }
+
+    function ChangerAnneeViaImage(plusOuMoins) {
+        var champ = document.getElementById('chp_anneeR');
+        var annee = parseInt(champ.innerText);
+        if (plusOuMoins == 1) {
+            champ.innerText = (annee + 1);
+        }
+        else {
+            champ.innerText = (annee - 1);
+        }
+
+        showGif();
+        RefreshTableauReleves();
+        RefreshTableauConsoChauffageAnnee();
+        LoadConsoChauffagePie();
+        hideGif();
+    }
+
+
+
+
+
+
+
+
+
+    //---------------------------------------------------------------------------------------------------------------------
+    // MA CONSOMMATION
+
+
+     function RefreshTableauConsoChauffageAnnee() {
+         var baseUrl = '@Url.Content("~/Home/GetListConsoChauffageAnnee/")';
+         var champ = document.getElementById('chp_anneeR');
+         var annee = parseInt(champ.innerText);
+        var tab_Date = new Array();
+        var tab_ConsoCuisine = new Array();
+        var tab_ConsoSalon = new Array();
+        var tab_ConsoSalonCh = new Array();
+        var tab_ConsoCh1 = new Array();
+        var tab_ConsoCh2 = new Array();
+        var tab_ConsoCh3 = new Array();
+        var tab_ConsoSdb = new Array();
+
+        $('#tab_ConsoChauffageAnnee > tbody').empty();
+
+            $.getJSON(baseUrl, { paramAnnee: annee, paramApptId: @ViewBag.ApptId }, function (result) {
+                $.each(result, function (index, itemData) {
+                    var Mois = itemData.Mois;
+                    var ConsoCuisine = itemData.Cuisine;
+                    var ConsoSalon = itemData.Salon;
+                    var ConsoSalonCh = itemData.Chambre_Salon;
+                    var ConsoCh1 = itemData.Chambre1;
+                    var ConsoCh2 = itemData.Chambre2;
+                    var ConsoCh3 = itemData.Chambre3;
+                    var ConsoSdb = itemData.Sdb;
+
+                    tab_Date.push(Mois);
+                    tab_ConsoCuisine.push(ConsoCuisine);
+                    tab_ConsoSalon.push(ConsoSalon);
+                    tab_ConsoSalonCh.push(ConsoSalonCh);
+                    tab_ConsoCh1.push(ConsoCh1);
+                    tab_ConsoCh2.push(ConsoCh2);
+                    tab_ConsoCh3.push(ConsoCh3);
+                    tab_ConsoSdb.push(ConsoSdb);
+
+                    var row = "<tr>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + Mois + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoCuisine + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoSalon + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoSalonCh + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoCh1 + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoCh2 + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoCh3 + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoSdb + "</td>";
+                    row += "</tr";
+
+                    $('#tab_ConsoChauffageAnnee > tbody').append(row);
+
+                });
+
+                //DisplayGraphValeurAppt(tab_Date, tab_Montant);
+                DisplayGraphConsoChauffageAnnee(tab_Date, tab_ConsoCuisine, tab_ConsoSalon, tab_ConsoSalonCh, tab_ConsoCh1, tab_ConsoCh2, tab_ConsoCh3, tab_ConsoSdb)
+
+        });
+    };
+
+
+    function DisplayGraphConsoChauffageAnnee(tab_Date, tab_ConsoCuisine, tab_ConsoSalon, tab_ConsoSalonCh, tab_ConsoCh1, tab_ConsoCh2, tab_ConsoCh3, tab_ConsoSdb) {
+        var ctx = document.getElementById("ch_ConsoChauffageAnnee").getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+
+            // The data for our dataset
+            data: {
+                labels: tab_Date,
+                datasets: [
+                    { label: "Cuisine", fill: false, borderColor: '#F48FB1', data: tab_ConsoCuisine, },
+                    { label: "Salon", fill: false, borderColor: '#FFAB91', data: tab_ConsoSalon, },
+                    { label: "Salon / Chambre", fill: false, borderColor: '#FFCC80', data: tab_ConsoSalonCh, },
+                    { label: "Chambre 1", fill: false, borderColor: '#E6EE9C', data: tab_ConsoCh1, },
+                    { label: "Chambre 2", fill: false, borderColor: '#C5E1A5', data: tab_ConsoCh2, },
+                    { label: "Chambre 3", fill: false, borderColor: '#A5D6A7', data: tab_ConsoCh3, },
+                    { label: "Sdb", fill: false, borderColor: '#90CAF9', data: tab_ConsoSdb, }
+
+                ]
+            },
+
+            // Configuration options go here
+            options: {}
+        });
+    }
+
+
+
+
+    function LoadConsoChauffagePie() {
+        var baseUrl = '@Url.Content("~/Home/GetListConsoChauffagePieAnnee/")';
+        var champ = document.getElementById('chp_anneeR');
+        var annee = parseInt(champ.innerText);
+        var tab_ConsoCuisine = 0;
+        var tab_ConsoSalon = 0;
+        var tab_ConsoSalonTV = 0;
+        var tab_ConsoCh1 = 0;
+        var tab_ConsoCh2 = 0;
+        var tab_ConsoCh3 = 0;
+        var tab_ConsoSdb = 0;
+
+        $.getJSON(baseUrl, { paramAnnee: annee, paramApptId: @ViewBag.ApptId }, function (result) {
+            $.each(result, function (index, itemData) {
+                tab_ConsoCuisine = (itemData.Cuisine);
+                tab_ConsoSalon = (itemData.Salon);
+                tab_ConsoSalonTV = (itemData.Chambre_Salon);
+                tab_ConsoCh1 = (itemData.Chambre1);
+                tab_ConsoCh2 = (itemData.Chambre2);
+                tab_ConsoCh3 = (itemData.Chambre3);
+                tab_ConsoSdb = (itemData.Sdb);
+
+            });
+
+            DisplayConsoAnneePie(tab_ConsoCuisine, tab_ConsoSalon, tab_ConsoSalonTV, tab_ConsoCh1, tab_ConsoCh2, tab_ConsoCh3, tab_ConsoSdb);
+        });
+    }
+
+    function DisplayConsoAnneePie(tab_ConsoCuisine, tab_ConsoSalon, tab_ConsoSalonTV, tab_ConsoCh1, tab_ConsoCh2, tab_ConsoCh3, tab_ConsoSdb) {
+            var ctx = document.getElementById('ch_ConsoChauffagePie').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [
+                            tab_ConsoCuisine,
+                            tab_ConsoSalon,
+                            tab_ConsoSalonTV,
+                            tab_ConsoCh1,
+                            tab_ConsoCh2,
+                            tab_ConsoCh3,
+                            tab_ConsoSdb,
+                        ],
+                        backgroundColor: ['#F48FB1', '#FFAB91', '#FFCC80', '#E6EE9C', '#C5E1A5', '#A5D6A7', '#90CAF9',],
+                        label: 'Dataset 1'
+                    }],
+                    labels: [
+                        'Cusine',
+                        'Salon',
+                        'Salon / Chambre',
+                        'Chambre 1',
+                        'Chambre 2', 'Chambre 3', 'Salle de bain'
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        position: 'left',
+                    },
+
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
+                }
+            });
+    }
+
+     function RefreshTableauConsoChauffage() {
+        var baseUrl = '@Url.Content("~/Home/GetListConsoChauffageTotal/")';
+        var tab_Date = new Array();
+        var tab_ConsoCuisine = new Array();
+        var tab_ConsoSalon = new Array();
+        var tab_ConsoSalonTV = new Array();
+        var tab_ConsoCh1 = new Array();
+        var tab_ConsoCh2 = new Array();
+        var tab_ConsoCh3 = new Array();
+        var tab_ConsoSdb = new Array();
+
+        $('#tab_ConsoChauffage > tbody').empty();
+
+            $.getJSON(baseUrl, {paramApptId: @ViewBag.ApptId }, function (result) {
+                $.each(result, function (index, itemData) {
+                    var Annee = itemData.Annee;
+                    var ConsoCuisine = itemData.Cuisine;
+                    var ConsoSalon = itemData.Salon;
+                    var ConsoSalonTV = itemData.Chambre_Salon;
+                    var ConsoCh1 = itemData.Chambre1;
+                    var ConsoCh2 = itemData.Chambre2;
+                    var ConsoCh3 = itemData.Chambre3;
+                    var ConsoSdb = itemData.Sdb;
+                    var Total = ConsoCuisine + ConsoSalon + ConsoSalonTV + ConsoCh1 + ConsoCh2 + ConsoCh3 + ConsoSdb;
+
+                    tab_Date.push(Annee);
+                    tab_ConsoCuisine.push(ConsoCuisine);
+                    tab_ConsoSalon.push(ConsoSalon);
+                    tab_ConsoSalonTV.push(ConsoSalonTV);
+                    tab_ConsoCh1.push(ConsoCh1);
+                    tab_ConsoCh2.push(ConsoCh2);
+                    tab_ConsoCh3.push(ConsoCh3);
+                    tab_ConsoSdb.push(ConsoSdb);
+
+                    var row = "<tr>";
+                    row += "<td>" + Annee + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoCuisine + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoSalon + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoSalonTV + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoCh1 + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoCh2 + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoCh3 + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoSdb + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + Total + "</td>";
+                    row += "</tr";
+
+                    $('#tab_ConsoChauffage > tbody').append(row);
+
+                });
+
+                DisplayGraphConsoChauffage(tab_Date, tab_ConsoCuisine, tab_ConsoSalon, tab_ConsoSalonTV, tab_ConsoCh1, tab_ConsoCh2, tab_ConsoCh3, tab_ConsoSdb)
+
+        });
+
+    };
+
+    function DisplayGraphConsoChauffage(tab_Date, tab_ConsoCuisine, tab_ConsoSalon, tab_ConsoSalonTV, tab_ConsoCh1, tab_ConsoCh2, tab_ConsoCh3, tab_ConsoSdb) {
+        var ctx = document.getElementById("ch_ConsoChauffage").getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+
+            // The data for our dataset
+            data: {
+                labels: tab_Date,
+                datasets: [
+                    { label: "Cuisine", fill: false, borderColor: '#F48FB1', data: tab_ConsoCuisine, },
+                    { label: "Salon", fill: false, borderColor: '#FFAB91', data: tab_ConsoSalon, },
+                    { label: "Salon / Chambre", fill: false, borderColor: '#FFCC80', data: tab_ConsoSalonTV, },
+                    { label: "Chambre 1", fill: false, borderColor: '#E6EE9C', data: tab_ConsoCh1, },
+                    { label: "Chambre 2", fill: false, borderColor: '#C5E1A5', data: tab_ConsoCh2, },
+                    { label: "Chambre 3", fill: false, borderColor: '#A5D6A7', data: tab_ConsoCh3, },
+                    { label: "Sdb", fill: false, borderColor: '#90CAF9', data: tab_ConsoSdb, }
+
+                ]
+            },
+
+            // Configuration options go here
+            options: {}
+        });
+    }
+
+
+
+    //---------------------------------------------------------------------------------------------------------------------
+    // GESTION RELEVE
+
+    Date.prototype.toDateInputValue = (function () {
+        var local = new Date(this);
+        local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+        return local.toJSON().slice(0, 10);
+    });
+
+
+
+    function RefreshTableauReleves() {
+        var baseUrl = '@Url.Content("~/Home/GetListRelevesAnnee/")';
+        var baseUrlImg = '@Url.Content("~/Content/Icones/")';
+        var champ = document.getElementById('chp_anneeR');
+        var annee = parseInt(champ.innerText);
+        var ch_date;
+        var ch_cuisine;
+        var ch_salon;
+        var ch_salonCh;
+        var ch_chambre1;
+        var ch_chambre2;
+        var ch_chambre3;
+        var ch_ConsoSdb;
+        var ch_consoId;
+
+        $('#tab_releveAnnee > tbody').empty();
+
+        $.getJSON(baseUrl, { paramAnnee: annee, paramApptId: @ViewBag.ApptId }, function (result) {
+                $.each(result, function (index, itemData) {
+                    var ch_date = itemData.MaDate;
+                    var ch_cuisine = itemData.Cuisine;
+                    var ch_salon = itemData.Salon;
+                    var ch_salonCh = itemData.Chambre_Salon;
+                    var ch_chambre1 = itemData.Chambre1;
+                    var ch_chambre2 = itemData.Chambre2;
+                    var ch_chambre3 = itemData.Chambre3;
+                    var ch_ConsoSdb = itemData.Sdb;
+                    var ch_consoId = itemData.ConsommationId;
+
+                    var row = "<tr>";
+                    row += "<td>" + ch_date + "</td>";
+                    row += "<td>" + ch_cuisine + "</td>";
+                    row += "<td>" + ch_salon + "</td>";
+                    row += "<td>" + ch_salonCh + "</td>";
+                    row += "<td>" + ch_chambre1 + "</td>";
+                    row += "<td>" + ch_chambre2 + "</td>";
+                    row += "<td>" + ch_chambre3 + "</td>";
+                    row += "<td>" + ch_ConsoSdb + "</td>";
+                    row += "<td><center><img src='" + baseUrlImg + "Delete_Red_25.png' onclick='DeleteReleveAjax(" + ch_consoId + ")'/></center></td>";
+                    row += "</tr";
+
+                    $('#tab_releveAnnee > tbody').append(row);
+
+                });
+
+        });
+
+    };
+
+
+    //Pop up add
+    function addNewConsoChauffage() {
+        var modal = document.getElementById('modal_addConsoChauffage');
+        var span = document.getElementById("closePopUpChauffage");
+
+        modal.style.display = "block";
+        document.getElementById('chp_consoChauffage_Date').value = new Date().toDateInputValue();
+
+        span.onclick = function () {modal.style.display = "none";}
+        window.onclick = function (event) {if (event.target == modal) { modal.style.display = "none";}}
+    }
+
+     //Add Conso
+    function AjouterConsoChauffageAjax() {
+
+        var Date = $('#chp_consoChauffage_Date').val();
+        var ConsoCuisine = $('#chp_consoChauffage_cuisine').val();
+        var ConsoSalon = $('#chp_consoChauffage_salon').val();
+        var ConsoSalonCh = $('#chp_consoChauffage_sa-ch').val();
+        var ConsoChambre1 = $('#chp_consoChauffage_ch1').val();
+        var ConsoChambre2 = $('#chp_consoChauffage_ch2').val();
+        var ConsoChambre3 = $('#chp_consoChauffage_ch3').val();
+        var ConsoSdb = $('#chp_consoChauffage_sdb').val();
+        debugger;
+        if (ConsoCuisine == "") { ConsoCuisine = 0; }
+        if (ConsoSalon == "") { ConsoSalon = 0; }
+        if (ConsoSalonCh == "") { ConsoSalonCh = 0; }
+        if (ConsoChambre1 == "") { ConsoChambre1 = 0; }
+        if (ConsoChambre2 == "") { ConsoChambre2 = 0; }
+        if (ConsoChambre3 == "") { ConsoChambre3 = 0; }
+        if (ConsoSdb == "") { ConsoSdb = 0; }
+
+        var data = {
+            'paramApptId': @ViewBag.ApptId,
+            'paramDate': Date,
+             'paramConsoCuisine': ConsoCuisine,
+             'paramConsoSalon': ConsoSalon,
+             'paramConsoSalonCh': ConsoSalonCh,
+             'paramConsoChambre1': ConsoChambre1,
+             'paramConsoChambre2': ConsoChambre2,
+             'paramConsoChambre3': ConsoChambre3,
+             'paramConsoSdb': ConsoSdb,
+         };
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/Home/AjouteReleve")',
+                data: data,
+                success: function () {
+                    var modal = document.getElementById('modal_addConsoChauffage');
+                    modal.style.display = "none";
+                    RefreshTableauReleves();
+                    RefreshTableauConsoChauffageAnnee();
+                    LoadConsoChauffagePie();
+                    getMessage();
+                }
+            });
+    }
+
+    function DeleteReleveAjax(id) {
+
+       var data = {
+           'paramId': id
+        };
+
+         $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/Home/DeleteReleve")',
+                data: data,
+                success: function () {
+                    RefreshTableauReleves();
+                }
+            });
+    }
+
+
+</script>
+
+<!--TITRE-->
+<div>
+    <h1 class="display-4">
+        Ma consommation pour
+        <img class="hvr-grow" onClick="ChangerAnneeViaImage(-1)" src='@Url.Content("~/Content/Previous_Orange_50.png")' />
+        <span class="display-4" id="chp_anneeR" name="Annee" type="text">2018</span>
+        <img class="hvr-grow" onClick="ChangerAnneeViaImage(1)" src='@Url.Content("~/Content/Next_Orange_50.png")' />
+    </h1>
+</div>
+
+
+
+
+
+<div class="tabbed_area">
+    <ul class="tabs">
+        <li><a href="javascript:ChangeOnglet('tab_1', 'content_1');" id="tab_1" class="active">Ma consomamtion</a></li>
+        <li><a href="javascript:ChangeOnglet('tab_2', 'content_2');" id="tab_2">Mes relevés</a></li>
+    </ul>
+</div>
+
+
+
+<!--Ma consommation-->
+<div id="content_1" class="content">
+
+    <br />
+    <h4 class="col-sm-12 titre-bloc">Consommation</h4>
+    <div class="sous-partie">
+        <div class="row">
+            <div class="col-sm-7">
+                <canvas id="ch_ConsoChauffageAnnee"></canvas>
+            </div>
+
+            <div class="col-sm-5">
+                <table id="tab_ConsoChauffageAnnee" class="mdl-data-table mdl-js-data-table">
+                    <thead>
+                        <tr>
+                            <th>Mois</th>
+                            <th>Cuisine</th>
+                            <th>Salon</th>
+                            <th>S/Ch</th>
+                            <th>Ch 1</th>
+                            <th>Ch 2</th>
+                            <th>Ch 3</th>
+                            <th>Sdb</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div><br /><br />
+
+    <h4 class="col-sm-12 titre-bloc">Répartition</h4>
+    <div class="sous-partie">
+        <div class="row">
+            <center>
+                <div class="row">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6">
+                        <canvas id="ch_ConsoChauffagePie"></canvas>
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+
+            </center>
+        </div>
+    </div><br /><br />
+
+    <h4 class="col-sm-12 titre-bloc">Evolution</h4>
+    <div class="sous-partie">
+        <div class="row">
+            <div class="col-sm-6">
+                <canvas id="ch_ConsoChauffage"></canvas>
+            </div>
+
+            <div class="col-sm-5">
+                <table id="tab_ConsoChauffage" class="mdl-data-table mdl-js-data-table">
+                    <thead>
+                        <tr>
+                            <th class="mdl-data-table__cell--non-numeric">Année</th>
+                            <th class="mdl-data-table__cell--non-numeric">Cuisine</th>
+                            <th class="mdl-data-table__cell--non-numeric">Salon</th>
+                            <th class="mdl-data-table__cell--non-numeric">S/Ch</th>
+                            <th class="mdl-data-table__cell--non-numeric">Ch 1</th>
+                            <th class="mdl-data-table__cell--non-numeric">Ch 2</th>
+                            <th class="mdl-data-table__cell--non-numeric">Ch 3</th>
+                            <th class="mdl-data-table__cell--non-numeric">Sdb</th>
+                            <th class="mdl-data-table__cell--non-numeric">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            
+        </div>
+    </div><br /><br />
+
+</div>
+
+
+<!--Mes relevés-->
+<div id="content_2" class="content">
+
+    <!--ACTIONS-->
+    <center>
+        <button onclick="addNewConsoChauffage();" class="mdl-button mdl-js-button mdl-button--accent">Ajouter un relevé</button>
+    </center>
+
+
+
+    <br />
+    <!--TABLEAU-->
+    <div>
+        <center>
+            <table id="tab_releveAnnee" class="mdl-data-table mdl-js-data-table">
+                <thead>
+                    <tr>
+                        <th class="mdl-data-table__cell--non-numeric">Date</th>
+                        <th class="mdl-data-table__cell--non-numeric">Cuisine</th>
+                        <th class="mdl-data-table__cell--non-numeric">Salon</th>
+                        <th class="mdl-data-table__cell--non-numeric">Salon / Chambre</th>
+                        <th class="mdl-data-table__cell--non-numeric">Chambre 1</th>
+                        <th class="mdl-data-table__cell--non-numeric">Chambre 2</th>
+                        <th class="mdl-data-table__cell--non-numeric">Chambre 3</th>
+                        <th class="mdl-data-table__cell--non-numeric">Sdb</th>
+                        <th class="mdl-data-table__cell--non-numeric">Supprimer</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </center>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<!--POP UP AJOUTER RELEVE-->
+
+<div id="modal_addConsoChauffage" class="modal">
+    <div class="modal-content">
+        <div class="row">
+            <div class="col-sm-10 form-group">
+                <h2>Ajouter une nouvelle consommation</h2>
+            </div>
+
+            <div class="col-sm-2 form-group">
+                <span id="closePopUpChauffage" class="close">&times;</span>
+            </div>
+
+            <!--Message-->
+            <div class="col-sm-12 message message-info">
+                Vous devez indiquer la valeur qu'indique le répartiteur de charge. Ansi, si vous aviez 110 fin janvier et 230 aujourd'hui, vous devez indiquer la valeur 230.
+            </div>
+
+
+            <!--Date-->
+            <div class="col-sm-3 form-group">
+                <span>Date :</span>
+                <div class="valeur">
+                    <input type="date" id="chp_consoChauffage_Date" class="mdl-textfield__input" name="Date">
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <!--Relevé cuisine -->
+            <div id="div_consoChauffage_cuisine" class="col-sm-3 form-group">
+                <span>Relevé cuisine :</span>
+                <div class="valeur">
+                    <input id="chp_consoChauffage_cuisine" class="mdl-textfield__input" name="Source">
+                </div>
+            </div>
+
+            <!--Relevé salon -->
+            <div id="div_consoChauffage_salon" class="col-sm-3 form-group">
+                <span>Relevé salon :</span>
+                <div class="valeur">
+                    <input id="chp_consoChauffage_salon" class="mdl-textfield__input" name="Source">
+                </div>
+            </div>
+
+            <!--Relevé salonTV -->
+            <div id="div_consoChauffage_sa-ch" class="col-sm-3 form-group">
+                <span>Relevé salon / Chambre :</span>
+                <div class="valeur">
+                    <input id="chp_consoChauffage_sa-ch" class="mdl-textfield__input" name="Source">
+                </div>
+            </div>
+
+            <!--Relevé bureau -->
+            <div id="div_consoChauffage_ch1" class="col-sm-3 form-group">
+                <span>Relevé Chambre 1 :</span>
+                <div class="valeur">
+                    <input id="chp_consoChauffage_ch1" class="mdl-textfield__input" name="Source">
+                </div>
+            </div>
+
+            <!--Relevé chambre -->
+            <div id="div_consoChauffage_ch2" class="col-sm-3 form-group">
+                <span>Relevé chambre 2 :</span>
+                <div class="valeur">
+                    <input id="chp_consoChauffage_ch2" class="mdl-textfield__input" name="Source">
+                </div>
+            </div>
+
+            <!--Relevé bnb -->
+            <div id="div_consoChauffage_ch3" class="col-sm-3 form-group">
+                <span>Relevé chambre 3 :</span>
+                <div class="valeur">
+                    <input id="chp_consoChauffage_ch3" class="mdl-textfield__input" name="Source">
+                </div>
+            </div>
+
+            <!--Relevé sdb -->
+            <div id="div_consoChauffage_sdb" class="col-sm-3 form-group">
+                <span>Relevé sdb :</span>
+                <div class="valeur">
+                    <input id="chp_consoChauffage_sdb" class="mdl-textfield__input" name="Source">
+                </div>
+            </div>
+        </div>
+
+        <center>
+            <button class="mdl-button mdl-js-button mdl-button--accent" onClick="AjouterConsoChauffageAjax()">
+                Ajouter
+            </button>
+        </center>
+    </div>
+</div>

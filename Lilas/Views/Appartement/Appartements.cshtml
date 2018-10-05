@@ -1,0 +1,478 @@
+﻿@model Lilas.Models.AppartementsViewModel
+
+@{
+    ViewBag.Title = "Appartements";
+}
+
+<script type="text/javascript" src="@Url.Content("~/Scripts/Chart.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/Chart.bundle.min.js")"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        document.getElementById('block_Conso1').style.display = 'none';
+        document.getElementById('block_Conso2').style.display = 'none';
+        document.getElementById('block_Infos1').style.display = 'none';
+        document.getElementById('block_Infos2').style.display = 'none';
+        document.getElementById('block_ConsoCourante1').style.display = 'none';
+        document.getElementById('block_ConsoCourante2').style.display = 'none';
+        
+
+    });
+
+
+
+    function AfficherInfosAppt(val) {
+
+        document.getElementById('block_Conso1').style.display = 'block';
+        document.getElementById('block_Conso2').style.display = 'block';
+        document.getElementById('block_Infos1').style.display = 'block';
+        document.getElementById('block_Infos2').style.display = 'block';
+        document.getElementById('block_ConsoCourante1').style.display = 'block';
+        document.getElementById('block_ConsoCourante2').style.display = 'block';
+
+
+        RefreshTableauConsoChauffage(val);
+        RefreshTableauConsoChauffageAnnee(val);
+        RefreshInformationsAppartement(val);
+    }
+
+
+
+    function RefreshInformationsAppartement(apptId) {
+        var baseUrl = '@Url.Content("~/Appartement/GetInformationsAppartement/")';
+        var Type = "";
+        var IsDoubleVitrage = false;
+        var IsRobinetsThermo = false;
+        var Orientation = "";
+
+            $.getJSON(baseUrl, {paramApptId: apptId }, function (result) {
+                $.each(result, function (index, itemData) {
+
+                    Type = itemData.Type;
+                    IsDoubleVitrage = itemData.IsDoubleVitrage;
+                    IsRobinetsThermo = itemData.IsRobinetsThermo;
+                    Orientation = itemData.Orientation;
+
+                    if (Type = "T2") {
+                        document.getElementById('typeT2').style.display = 'block';
+                        document.getElementById('typeT3').style.display = 'none';
+                        document.getElementById('typeT4').style.display = 'none';
+                    }
+
+                    if (Type = "T3") {
+                        document.getElementById('typeT2').style.display = 'none';
+                        document.getElementById('typeT3').style.display = 'block';
+                        document.getElementById('typeT4').style.display = 'none';
+                    }
+
+                    if (Type = "T4") {
+                        document.getElementById('typeT2').style.display = 'none';
+                        document.getElementById('typeT3').style.display = 'none';
+                        document.getElementById('typeT4').style.display = 'block';
+                    }
+
+                    if (IsDoubleVitrage) {
+                        document.getElementById('dv_vitre').style.display = 'none';
+                        document.getElementById('dv_vitreOK').style.display = 'block';
+                    }
+                    else {
+                        document.getElementById('dv_vitre').style.display = 'block';
+                        document.getElementById('dv_vitreOK').style.display = 'none';
+                    }
+
+                    if (IsRobinetsThermo) {
+                        document.getElementById('dv_valves').style.display = 'none';
+                        document.getElementById('dv_valvesOK').style.display = 'block';
+                    }
+                    else {
+                        document.getElementById('dv_valves').style.display = 'block';
+                        document.getElementById('dv_valvesOK').style.display = 'none';
+                    }
+
+                    document.getElementById('orientNord').style.display = 'none';
+                    document.getElementById('orientSud').style.display = 'none';
+                    document.getElementById('orientEst').style.display = 'none';
+                    document.getElementById('orientOuest').style.display = 'none';
+
+                    if (Orientation.includes("Nord")) {
+                        document.getElementById('orientNord').style.display = 'block';
+                    }
+
+                    if (Orientation.includes("Sud")) {
+                        document.getElementById('orientSud').style.display = 'block';
+                    }
+
+                    if (Orientation.includes("Est")) {
+                        document.getElementById('orientEst').style.display = 'block';
+                    }
+
+                    if (Orientation.includes("Ouets")) {
+                        document.getElementById('orientOuest').style.display = 'block';
+                    }
+
+                });
+
+        });
+
+    };
+
+
+
+
+
+
+    function RefreshTableauConsoChauffage(apptId) {
+        var baseUrl = '@Url.Content("~/Home/GetListConsoChauffageTotal/")';
+        var tab_Date = new Array();
+        var tab_ConsoCuisine = new Array();
+        var tab_ConsoSalon = new Array();
+        var tab_ConsoSalonTV = new Array();
+        var tab_ConsoCh1 = new Array();
+        var tab_ConsoCh2 = new Array();
+        var tab_ConsoCh3 = new Array();
+        var tab_ConsoSdb = new Array();
+
+        $('#tab_ConsoChauffage > tbody').empty();
+
+            $.getJSON(baseUrl, {paramApptId: apptId }, function (result) {
+                $.each(result, function (index, itemData) {
+                    var Annee = itemData.Annee;
+                    var ConsoCuisine = itemData.Cuisine;
+                    var ConsoSalon = itemData.Salon;
+                    var ConsoSalonTV = itemData.Chambre_Salon;
+                    var ConsoCh1 = itemData.Chambre1;
+                    var ConsoCh2 = itemData.Chambre2;
+                    var ConsoCh3 = itemData.Chambre3;
+                    var ConsoSdb = itemData.Sdb;
+                    var Total = ConsoCuisine + ConsoSalon + ConsoSalonTV + ConsoCh1 + ConsoCh2 + ConsoCh3 + ConsoSdb;
+
+                    tab_Date.push(Annee);
+                    tab_ConsoCuisine.push(ConsoCuisine);
+                    tab_ConsoSalon.push(ConsoSalon);
+                    tab_ConsoSalonTV.push(ConsoSalonTV);
+                    tab_ConsoCh1.push(ConsoCh1);
+                    tab_ConsoCh2.push(ConsoCh2);
+                    tab_ConsoCh3.push(ConsoCh3);
+                    tab_ConsoSdb.push(ConsoSdb);
+
+                    var row = "<tr>";
+                    row += "<td>" + Annee + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoCuisine + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoSalon + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoSalonTV + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoCh1 + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoCh2 + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoCh3 + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + ConsoSdb + "</td>";
+                    row += "<td class='mdl-data-table__cell--non-numeric'>" + Total + "</td>";
+                    row += "</tr";
+
+                    $('#tab_ConsoChauffage > tbody').append(row);
+
+                });
+
+                DisplayGraphConsoChauffage(tab_Date, tab_ConsoCuisine, tab_ConsoSalon, tab_ConsoSalonTV, tab_ConsoCh1, tab_ConsoCh2, tab_ConsoCh3, tab_ConsoSdb)
+
+        });
+
+    };
+
+    function DisplayGraphConsoChauffage(tab_Date, tab_ConsoCuisine, tab_ConsoSalon, tab_ConsoSalonTV, tab_ConsoCh1, tab_ConsoCh2, tab_ConsoCh3, tab_ConsoSdb) {
+        var ctx = document.getElementById("ch_ConsoChauffage").getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+
+            // The data for our dataset
+            data: {
+                labels: tab_Date,
+                datasets: [
+                    { label: "Cuisine", fill: false, borderColor: '#F48FB1', data: tab_ConsoCuisine, },
+                    { label: "Salon", fill: false, borderColor: '#FFAB91', data: tab_ConsoSalon, },
+                    { label: "Salon / Chambre", fill: false, borderColor: '#FFCC80', data: tab_ConsoSalonTV, },
+                    { label: "Chambre 1", fill: false, borderColor: '#E6EE9C', data: tab_ConsoCh1, },
+                    { label: "Chambre 2", fill: false, borderColor: '#C5E1A5', data: tab_ConsoCh2, },
+                    { label: "Chambre 3", fill: false, borderColor: '#A5D6A7', data: tab_ConsoCh3, },
+                    { label: "Sdb", fill: false, borderColor: '#90CAF9', data: tab_ConsoSdb, }
+
+                ]
+            },
+
+            // Configuration options go here
+            options: {}
+        });
+    }
+
+
+
+
+      function RefreshTableauConsoChauffageAnnee(apptId) {
+          var baseUrl = '@Url.Content("~/Home/GetListConsoChauffageAnnee/")';
+
+          var aujd = new Date();
+         var annee = aujd.getFullYear();
+        var tab_Date = new Array();
+        var tab_ConsoCuisine = new Array();
+        var tab_ConsoSalon = new Array();
+        var tab_ConsoSalonCh = new Array();
+        var tab_ConsoCh1 = new Array();
+        var tab_ConsoCh2 = new Array();
+        var tab_ConsoCh3 = new Array();
+        var tab_ConsoSdb = new Array();
+
+            $.getJSON(baseUrl, { paramAnnee: annee, paramApptId: apptId }, function (result) {
+                $.each(result, function (index, itemData) {
+                    var Mois = itemData.Mois;
+                    var ConsoCuisine = itemData.Cuisine;
+                    var ConsoSalon = itemData.Salon;
+                    var ConsoSalonCh = itemData.Chambre_Salon;
+                    var ConsoCh1 = itemData.Chambre1;
+                    var ConsoCh2 = itemData.Chambre2;
+                    var ConsoCh3 = itemData.Chambre3;
+                    var ConsoSdb = itemData.Sdb;
+
+                    tab_Date.push(Mois);
+                    tab_ConsoCuisine.push(ConsoCuisine);
+                    tab_ConsoSalon.push(ConsoSalon);
+                    tab_ConsoSalonCh.push(ConsoSalonCh);
+                    tab_ConsoCh1.push(ConsoCh1);
+                    tab_ConsoCh2.push(ConsoCh2);
+                    tab_ConsoCh3.push(ConsoCh3);
+                    tab_ConsoSdb.push(ConsoSdb);
+
+                });
+                DisplayGraphConsoChauffageAnnee(tab_Date, tab_ConsoCuisine, tab_ConsoSalon, tab_ConsoSalonCh, tab_ConsoCh1, tab_ConsoCh2, tab_ConsoCh3, tab_ConsoSdb)
+
+        });
+    };
+
+
+    function DisplayGraphConsoChauffageAnnee(tab_Date, tab_ConsoCuisine, tab_ConsoSalon, tab_ConsoSalonCh, tab_ConsoCh1, tab_ConsoCh2, tab_ConsoCh3, tab_ConsoSdb) {
+        var ctx = document.getElementById("ch_ConsoChauffageAnnee").getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+
+            // The data for our dataset
+            data: {
+                labels: tab_Date,
+                datasets: [
+                    { label: "Cuisine", fill: false, borderColor: '#F48FB1', data: tab_ConsoCuisine, },
+                    { label: "Salon", fill: false, borderColor: '#FFAB91', data: tab_ConsoSalon, },
+                    { label: "Salon / Chambre", fill: false, borderColor: '#FFCC80', data: tab_ConsoSalonCh, },
+                    { label: "Chambre 1", fill: false, borderColor: '#E6EE9C', data: tab_ConsoCh1, },
+                    { label: "Chambre 2", fill: false, borderColor: '#C5E1A5', data: tab_ConsoCh2, },
+                    { label: "Chambre 3", fill: false, borderColor: '#A5D6A7', data: tab_ConsoCh3, },
+                    { label: "Sdb", fill: false, borderColor: '#90CAF9', data: tab_ConsoSdb, }
+
+                ]
+            },
+
+            // Configuration options go here
+            options: {}
+        });
+    }
+
+
+
+
+
+
+
+</script>
+
+
+<!--TITRE-->
+<div>
+    <h1 class="display-4">
+        Appartements de la résidence
+    </h1>
+</div><br />
+
+
+<div class="row">
+    <div class="col-sm-3">
+
+        <table class="mdl-data-table mdl-js-data-table">
+            <tr>
+                <th>Appartement</th>
+                <th>Partage</th>
+                <th>Afficher</th>
+            </tr>
+
+            @for (var nb_appt = 0; nb_appt < Model.list_appts.Count(); nb_appt++)
+            {
+                <tr>
+                    <td>@Model.list_appts[nb_appt].AppartementName</td>
+                    @if (Model.list_appts[nb_appt].Partager)
+                    {
+                        <td>Oui</td>
+                        if (Model.JePartage)
+                        {
+                        <td><img src='@Url.Content("~/Content/Icones/")ic_graph_orange.png' onclick='AfficherInfosAppt(@Model.list_appts[nb_appt].AppartementId)' /></td>
+
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+                    }
+                    else
+                    {
+                        <td><span class="texteRouge">Non</span></td>
+                        <td></td>
+                    }
+
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="col-sm-9">
+
+        @*<h4 class="col-sm-12 titre-bloc">Général</h4>
+        <div class="sous-partie">
+            <div class="row">
+                <div class="col-sm-6 form-group">
+                    <span>Appartements :</span>
+                    <div class="valeur">
+                        <span>@Model.nbAppts / @Model.nbApptsTotal</span>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 form-group">
+                    <span>Partage :</span>
+                    <div class="valeur">
+                        <span>@Model.nbPartage / @Model.nbAppts</span>
+                    </div>
+                </div>
+            </div>
+        </div><br />*@
+
+        @if (!Model.JePartage)
+    {
+        <div class="message message-info">
+            <span>Pour pouvoir visualiser les informations partagées par les autres utilisateurs, vous devez accepter de partager les inforations relatives à votre apportement.</span><br />
+        </div>
+}
+
+
+        <h4 id="block_Infos1" class="col-sm-12 titre-bloc">Informations</h4>
+        <div id="block_Infos2" class="sous-partie">
+
+            <div class="row">
+
+                <!--Type-->
+                <div class="col-sm-6">
+                    <span>Type :</span>
+                    <div class="valeur">
+
+                        <label id="typeT2" class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type1">
+                            <input class="mdl-radio__button" id="Type1" name="rb_type" type="radio"
+                                   value="on" checked>
+                            <span class="mdl-radio__label normaltext">T2</span>
+                        </label>
+                        <label id="typeT3" class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type2">
+                            <input class="mdl-radio__button" id="Type2" name="rb_type" type="radio" value="off" checked>
+                            <span class="mdl-radio__label normaltext">T3</span>
+                        </label>
+                        <label id="typeT4" class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type3">
+                            <input class="mdl-radio__button" id="Type3" name="rb_type" type="radio" value="off" checked>
+                            <span class="mdl-radio__label normaltext">T4</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!--Orientation-->
+                <div class="col-sm-6 form-group">
+                    <span>Orientation :</span>
+                    <div class="valeur">
+                        <label id="orientSud" class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_sud-1">
+                            <input type="radio" id="ch_or_sud-1" class="mdl-radio__button" checked>
+                            <span class="mdl-radio__label normaltext">Sud</span>
+                        </label>
+                        <label id="orientNord" class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_nord-2">
+                            <input type="radio" id="ch_or_nord-2" class="mdl-radio__button" checked>
+                            <span class="mdl-radio__label normaltext">Nord</span>
+                        </label>
+                        <label id="orientEst" class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_est-1">
+                            <input type="radio" id="ch_or_est-1" class="mdl-radio__button" checked>
+                            <span class="mdl-radio__label normaltext">Est </span>
+                        </label>
+                        <label id="orientOuest" class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_ouest-2">
+                            <input type="radio" id="ch_or_ouest-2" class="mdl-radio__button" checked>
+                            <span class="mdl-radio__label normaltext">Ouest</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!--Double vitrage-->
+                <div id="dv_vitre" class="col-sm-12">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_vitre">
+                        <input type="checkbox" id="ch_vitre" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label normaltext">Double vitrage</span>
+                    </label>
+                </div>
+                <div id="dv_vitreOK" class="col-sm-12">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_vitreOK">
+                        <input type="checkbox" id="ch_vitreOK" class="mdl-checkbox__input" checked>
+                        <span class="mdl-checkbox__label normaltext">Double vitrage</span>
+                    </label>
+                </div>
+
+                <!--Robinets-->
+                <div id="dv_valves" class="col-sm-12">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_valves">
+                        <input type="checkbox" id="ch_valves" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label normaltext">Robinets Thermostatiques / Valves automatiques</span>
+                    </label>
+                </div>
+                <div id="dv_valvesOK" class="col-sm-12">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_valvesOK">
+                        <input type="checkbox" id="ch_valvesOK" class="mdl-checkbox__input" checked>
+                        <span class="mdl-checkbox__label normaltext">Robinets Thermostatiques / Valves automatiques</span>
+                    </label>
+                </div>
+
+
+            </div>
+        </div><br />
+
+
+        <h4 id="block_ConsoCourante1" class="col-sm-12 titre-bloc">Consommation courante</h4>
+        <div id="block_ConsoCourante2" class="sous-partie">
+            <canvas id="ch_ConsoChauffageAnnee" width="300" height="100"></canvas>
+            <br />
+        </div><br />
+
+        <h4 id="block_Conso1" class="col-sm-12 titre-bloc">Consommation annuelle</h4>
+        <div id="block_Conso2" class="sous-partie">
+            <canvas id="ch_ConsoChauffage" width="300" height="100"></canvas>
+            <br />
+            <center>
+                <table id="tab_ConsoChauffage" class="mdl-data-table mdl-js-data-table">
+                    <thead>
+                        <tr>
+                            <th class="mdl-data-table__cell--non-numeric">Année</th>
+                            <th class="mdl-data-table__cell--non-numeric">Cuisine</th>
+                            <th class="mdl-data-table__cell--non-numeric">Salon</th>
+                            <th class="mdl-data-table__cell--non-numeric">S/Ch</th>
+                            <th class="mdl-data-table__cell--non-numeric">Ch 1</th>
+                            <th class="mdl-data-table__cell--non-numeric">Ch 2</th>
+                            <th class="mdl-data-table__cell--non-numeric">Ch 3</th>
+                            <th class="mdl-data-table__cell--non-numeric">Sdb</th>
+                            <th class="mdl-data-table__cell--non-numeric">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </center>
+        </div><br />
+
+
+
+
+
+    </div>
+</div>
+

@@ -1,0 +1,435 @@
+﻿@model Lilas.Models.LoginViewModel
+
+@{
+    ViewBag.Title = "Connexion";
+}
+
+
+
+
+<script type="text/javascript">
+
+    var c_bat = '';
+    var c_esc = '';
+    var c_type = 'T2';
+    var c_orient_ns = '';
+    var c_orient_eo = '';
+
+    $(document).ready(function () {
+
+
+    });
+
+
+    function SeConnecter() {
+        $("form")[0].submit();
+    }
+
+    function popUpCompte() {
+        var modal = document.getElementById('modal_creerCompte');
+        var span = document.getElementById("closePopUp");
+
+        modal.style.display = "block";
+
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    }
+
+
+    function majBat(val) {
+        c_bat = val;
+        majNomAppt();
+    }
+
+    function majEsc(val) {
+        c_esc = val;
+        majNomAppt();
+    }
+
+    function majType(val) {
+        c_type = val;
+    }
+
+    function majOrientNS(val) {
+        c_orient_ns = val;
+    }
+
+    function majOrientEO(val) {
+        c_orient_eo = val;
+    }
+
+    function majNomAppt() {
+        var chp_nom = document.getElementById('ch_appt');
+        //var val_etage = document.getElementById('ch_etage').value;
+        var val_porte = document.getElementById('ch_porte').value;
+
+        var nom = c_bat + c_esc;
+
+        //if (val_etage != null) {
+        //    nom += val_etage;
+        //}
+
+        if (val_porte != null) {
+            nom += val_porte;
+        }
+
+        chp_nom.value = nom;
+    }
+
+
+    //---------------------------------------------------------------------------------------------------------
+
+
+    function CreerCompteAjax() {
+        var UserName = $('#ch_user').val();
+        var Appartement = $('#ch_appt').val();
+        var Batiment = c_bat;
+        var Escalier = c_esc;
+        var Etage = $('#ch_etage').val();
+        var Porte = $('#ch_porte').val();
+        var Type = c_type;
+        var IsDoubleVitrage = false;
+        var IsRobinetsThermo = false;
+        var AutoriserPartager = false;
+        var Orientation = c_orient_ns + " " + c_orient_eo;
+
+        if ($('#ch_vitre').checked) {
+            IsDoubleVitrage = true;
+        }
+
+        if ($('#ch_valves').checked) {
+            IsDoubleVitrage = true;
+        }
+
+        if ($('#ch_partager').checked) {
+            AutoriserPartager = true;
+        }
+        
+
+
+            var data = {
+                'paramUserName': UserName,
+                'paramAppartement': Appartement,
+                'paramBatiment': Batiment,
+                'paramEscalier': Escalier,
+                'paramEtage': Etage,
+                'paramPorte': Porte,
+                'paramType': Type,
+                'paramIsDoubleVitrage': IsDoubleVitrage,
+                'paramIsRobinetsThermo': IsRobinetsThermo,
+                'paramOrientation': Orientation,
+                'paramPartage': AutoriserPartager,
+            };
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/Login/CreerCompteAjax")',
+                data: data,
+                success: function () {
+                    var modal = document.getElementById('modal_creerCompte');
+                    modal.style.display = "none";
+                    getMessage();
+                }
+            });
+    }
+
+
+
+    @*function getMessage() {
+        var baseUrl = '@Url.Content("~/Login/Get_message/")';
+
+        $.getJSON(baseUrl, function (result) {
+            $.each(result, function (index, itemData) {
+                var message = itemData.message;
+                    if (message.includes("NOK")) {
+                        message = message.replace("NOK", "");
+                    }
+                    else {
+
+                    }
+                    displayMessage(message)
+            });
+        });
+
+    }*@
+
+
+
+    //---------------------------------------------------------------------------------------------------------
+
+
+
+</script>
+
+
+
+
+
+
+
+<div>
+    <h1 class="">Se connecter</h1><hr />
+</div>
+
+@if(Model.isErreur)
+{
+<div class="col-sm-10 message message-info">
+    <span>Impossible de vous authentifier avec ce couplke Appartement / Nom</span><br />
+</div>
+}
+
+
+@if (Model.Authentifie)
+{
+    <h3>
+        Vous êtes déjà authentifié avec le login :
+        @Model.Utilisateur
+    </h3>
+    @Html.ActionLink("Voulez-vous vous déconnecter ?", "Deconnexion")
+}
+else
+{
+    <div class="row">
+
+
+        @using (Html.BeginForm())
+        {
+
+            <div class="col-sm-3">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        @Html.TextBoxFor(m => m.Appart, new { @class = "mdl-textfield__input", @id = "ch_util" })
+                        <label class="mdl-textfield__label" for="ch_util">Appartement :</label>
+                        <span class="mdl-textfield__error">Texte non valide</span>
+                    </div>
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-3">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        @Html.TextBoxFor(m => m.Utilisateur, new { @class = "mdl-textfield__input", @id = "ch_mdp" })
+                        <label class="mdl-textfield__label" for="ch_mdp">Nom :</label>
+                        <span class="mdl-textfield__error">Texte non valide</span>
+                    </div>
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-3">
+                <button onclick="SeConnecter();" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Se Connecter</button>
+            </div>
+            <div class="col-sm-1"></div>
+
+        }
+
+        <div class="col-sm-12 clear"></div>
+
+        <div class="col-sm-12 clear">
+            <span>Vous n'avez pas encore de compte pour votre appartement ?  </span><a onclick="popUpCompte()">Créez un compte</a>
+        </div>
+
+
+    </div>
+}
+
+
+    
+
+
+
+
+
+
+
+    <!-- The Modal -->
+
+    <div id="modal_creerCompte" class="modal">
+        <div class="modal-content">
+            <div class="row">
+                <div class="col-sm-10 form-group">
+                    <h2>Création d'un nouveau compte</h2>
+                </div>
+
+                <div class="col-sm-2 form-group">
+                    <span id="closePopUp" class="close">&times;</span>
+                </div>
+
+
+                <!--Batiment-->
+                <div class="col-sm-3 form-group">
+                    <span>Batiment :</span>
+                    <div class="valeur">
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_bat-1">
+                            <input type="radio" id="rb_bat-1" class="mdl-radio__button" name="rb_bat" value="1" onclick="majBat('A4');">
+                            <span class="mdl-radio__label normaltext">A4</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_bat-2">
+                            <input type="radio" id="rb_bat-2" class="mdl-radio__button" name="rb_bat" value="2" onclick="majBat('B');">
+                            <span class="mdl-radio__label normaltext">B</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!--Escalier-->
+                <div class="col-sm-3 form-group">
+                    <span class="normaltext">Escalier :</span>
+                    <div class="valeur">
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_esc-1">
+                            <input type="radio" id="rb_esc-1" class="mdl-radio__button" name="rb_esc" value="1" onclick="majEsc('A');">
+                            <span class="mdl-radio__label normaltext">A</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_esc-2">
+                            <input type="radio" id="rb_esc-2" class="mdl-radio__button" name="rb_esc" value="2" onclick="majEsc('B');">
+                            <span class="mdl-radio__label normaltext">B</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!--Etage-->
+                <div class="col-sm-3 form-group">
+                    <span>Etage :</span>
+                    <div class="valeur">
+                        <div class="noPadding mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class=" mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="ch_etage" onkeyup="majNomAppt();">
+                            <span class="mdl-textfield__error">Incorrect</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!--porte-->
+                <div class="col-sm-3 form-group">
+                    <span>porte :</span>
+                    <div class="valeur">
+                        <div class="noPadding mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="ch_porte" onkeyup="majNomAppt();">
+                            <span class="mdl-textfield__error">Incorrect</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 clear"></div>
+
+
+                <!--Appartement-->
+                <div class="col-sm-6 form-group ">
+                    <span>Appartement :</span>
+                    <div class="valeur">
+                        <div class="noPadding mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" type="text" id="ch_appt">
+                            <span class="mdl-textfield__error">Appartement déjà créé !</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Nom-->
+                <div class="col-sm-6 form-group">
+                    <span>Nom :</span>
+                    <div class="valeur">
+                        <div class="noPadding mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" type="text" id="ch_user">
+                            <span class="mdl-textfield__error">Incorrect</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 clear"></div>
+
+
+                <!--Type appartement-->
+                <div class="col-sm-6 form-group">
+                    <span>Type :</span>
+                    <div class="valeur">
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type1">
+                            <input checked class="mdl-radio__button" id="Type1" name="rb_type" type="radio"
+                                   value="on" onclick="majType('T2');">
+                            <span class="mdl-radio__label normaltext">T2</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type2">
+                            <input class="mdl-radio__button" id="Type2" name="rb_type" type="radio" value="off" onclick="majType('T3');">
+                            <span class="mdl-radio__label normaltext">T3</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type3">
+                            <input class="mdl-radio__button" id="Type3" name="rb_type" type="radio" value="off" onclick="majType('T4');">
+                            <span class="mdl-radio__label normaltext">T4</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!--Double vitrage-->
+                <div class="col-sm-6 form-group">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_vitre">
+                        <input type="checkbox" id="ch_vitre" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label normaltext">Double vitrage</span>
+                    </label>
+                </div>
+                <div class="col-sm-6"></div>
+
+                <!--Robinets-->
+                <div class="col-sm-6 form-group">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_valves">
+                        <input type="checkbox" id="ch_valves" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label normaltext">Robinets Thermostatiques / Valves automatiques</span>
+                    </label>
+                </div>
+
+
+
+
+                <!--Orientation-->
+                <div class="col-sm-6 form-group">
+                    <span>Orientation :</span>
+                    <div class="valeur">
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_sud-1">
+                            <input type="radio" id="ch_or_sud-1" class="mdl-radio__button" name="ch_or_ns" value="1" onclick="majOrientNS('Sud');">
+                            <span class="mdl-radio__label normaltext">Sud</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_nord-2">
+                            <input type="radio" id="ch_or_nord-2" class="mdl-radio__button" name="ch_or_ns" value="2" onclick="majOrientNS('Nord ');">
+                            <span class="mdl-radio__label normaltext">Nord</span>
+                        </label>
+                        <br />
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_est-1">
+                            <input type="radio" id="ch_or_est-1" class="mdl-radio__button" name="ch_or_eo" value="1" onclick="majOrientEO('Est');">
+                            <span class="mdl-radio__label normaltext">Est </span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_ouest-2">
+                            <input type="radio" id="ch_or_ouest-2" class="mdl-radio__button" name="ch_or_eo" value="2" onclick="majOrientEO('Ouest');">
+                            <span class="mdl-radio__label normaltext">Ouest</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 form-group">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_partager">
+                        <input type="checkbox" id="ch_partager" class="mdl-checkbox__input" checked>
+                        <span class="mdl-checkbox__label normaltext">Autoriser le partage des données</span>
+                    </label>
+                </div>
+
+                <div class="col-sm-1"></div>
+                <div class="col-sm-10 message message-info">
+                    <span>Les champs "Appartement" et "Nom" seront necessaires pour vous identifier.</span><br />
+                    <span>Le partage des données permet de partager les caractéristiques de votre logement (Double vitrage, valves, orientation, type appartement et consommation moyenne annuelle). Vous devez accepter de partager ces informations pour avoir la possibilité de voir ces même informations pour d'autres logements (modifiable par la suite).</span>
+                </div>
+                <div class="col-sm-1"></div>
+
+
+
+
+
+                <!--Btn add-->
+                <div class="col-sm-12 form-group center">
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onClick="CreerCompteAjax()">
+                        Créer
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+

@@ -1,0 +1,253 @@
+﻿
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-left: 20px;
+    margin-right: 20px !important;
+    margin-top: 10px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+body {
+    padding-bottom: 20px;
+    padding-top: 40px;
+}
+
+.hidden {
+    display: none;
+}
+
+h1 {
+    font-size: 4.5rem;
+    font-weight: 300;
+    line-height: 1.2;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+h4 {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+
+
+
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    border-radius: 0;
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%;
+}
+
+
+
+/* Modal Content */
+.modal-contentShort {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 20%;
+}
+
+.clear {
+    clear: both;
+}
+
+.noPadding {
+    padding: 0px !important;
+}
+
+.clear {
+    padding-top: 20px;
+}
+
+.normaltext {
+    font-weight: normal;
+}
+
+.center {
+    margin: 0 auto;
+    text-align: center;
+}
+
+
+.message {
+    margin: 15px 0;
+    padding: 8px;
+    width: 100%;
+    color: white;
+}
+
+    .message.message-info {
+        background: #ff9800;
+    }
+
+    .message.message-success {
+        background: #2c9151;
+    }
+
+    .message.message-warning {
+        background: #ed8000;
+    }
+
+    .message.message-error {
+        background: #e6464d;
+    }
+
+a {
+    color: #ff9800;
+}
+
+    a:hover {
+        color: #ff9800;
+        text-decoration: underline;
+    }
+
+
+
+.gifLoading {
+    position: fixed;
+    z-index: 1100;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100px; /* Need a specific value to work */
+    padding-top: 300px;
+    /*padding-bottom: 80%;*/
+    /*background-color: rgba(0, 0, 255, 0.5);*/
+}
+
+
+.FondGif {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    z-index: 1050;
+    left: 0;
+    right: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+.messageFlottant {
+    position: fixed;
+    z-index: 999;
+    top: 80px;
+    right: 1em;
+    background: #2c9151;
+    color: white;
+    padding: 8px;
+}
+
+
+/*----ONGLETS-----------------------------------------------------------------------------------------------------------*/
+.tabbed_area {
+    /*border: 1px solid #494e52;
+    background-color: #636d76;*/
+    padding-top: 8px;
+}
+
+ul.tabs {
+    margin: 0px;
+    padding: 0px;
+    margin-top: 5px;
+    margin-bottom: 6px;
+}
+
+    ul.tabs li {
+        list-style: none;
+        display: inline;
+    }
+
+        ul.tabs li a {
+            background-color: #ffffff;
+            color: #f44336;
+            padding: 8px 14px 8px 14px;
+            text-decoration: none;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+            ul.tabs li a:hover {
+                border-color: #f44336;
+            }
+
+            ul.tabs li a.active {
+                background-color: #f44336;
+                color: #ffffff;
+                /*ffab40*/
+            }
+
+.content {
+    background-color: #ffffff;
+    padding: 10px;
+    border-top: 1px solid #f44336;
+}
+
+
+#content_2, #content_3, #content_4, #content_5 {
+    display: none;
+}
+
+
+.titre-bloc {
+    font-size: 18px;
+    font-weight: 300;
+    position: relative;
+    clear: both;
+    padding: 5px 10px;
+    color: white;
+    border: 1px solid #4b4b4b;
+    background: #3e3e3e;
+}
+
+.sous-partie {
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: 16px;
+    position: relative;
+    top: 10px;
+    padding: 15px;
+    border: 1px solid #3e3e3e;
+    border-radius: 0;
+}
+
+th {
+    background-color: #3e3e3e;
+    color: white !important;
+}
+
+
+.texteRouge {
+    color: #F44336;
+}

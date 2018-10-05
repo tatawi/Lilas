@@ -1,0 +1,277 @@
+﻿@{
+    ViewBag.Title = "Général";
+}
+
+<script type="text/javascript" src="@Url.Content("~/Scripts/Chart.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/Chart.bundle.min.js")"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        showGif();
+        RefreshTableauConsoChauffageAnnee();
+        RefreshTableauConsoChauffageTotal();
+    });
+
+
+
+
+    function ChangerAnneeViaImage(plusOuMoins) {
+        var champ = document.getElementById('chp_annee');
+        var annee = parseInt(champ.innerText);
+        if (plusOuMoins == 1) {
+            champ.innerText = (annee + 1);
+        }
+        else {
+            champ.innerText = (annee - 1);
+        }
+        showGif();
+        RefreshTableauConsoChauffageAnnee();
+    }
+
+
+    function GestionMessageDonnees(isDonnees) {
+        var tb_msg = document.getElementsByClassName("PasDeDonnees");
+        if (isDonnees) {
+            for (x = 0; x < tb_msg.length; x++) {
+                tb_msg[x].style.display = 'block';
+            }
+        }
+        else {
+            for (x = 0; x < tb_msg.length; x++) {
+                tb_msg[x].style.display = 'none';
+            }
+        }
+    }
+
+
+
+    //---------------------------------------------------------------------------------------------------------------------
+    // MA CONSOMMATION
+
+
+     function RefreshTableauConsoChauffageAnnee() {
+        var baseUrl = '@Url.Content("~/Home/GetConsommationsMoyennes/")';
+        var champ = document.getElementById('chp_annee');
+        var annee = parseInt(champ.innerText);
+        var tab_Legend = new Array();
+        var tab_Perso = new Array();
+        var tab_Moyenne = new Array();
+        var tab_MoyenneType = new Array();
+
+
+            $.getJSON(baseUrl, { paramAnnee: annee, paramApptId: @ViewBag.ApptId }, function (result) {
+                $.each(result, function (index, itemData) {
+                    var Legend = itemData.legend;
+                    var Perso = itemData.perso;
+                    var Moyenne = itemData.moyenne;
+                    var MoyenneType = itemData.moyType;
+
+                    tab_Legend.push(Legend);
+                    tab_Perso.push(Perso);
+                    tab_Moyenne.push(Moyenne);
+                    tab_MoyenneType.push(MoyenneType);
+
+                });
+
+
+                DisplayGraphConsoChauffageAnnee(tab_Legend, tab_Perso, tab_Moyenne, tab_MoyenneType);
+                DisplayConsoAnneePie(tab_Legend, tab_Perso, tab_Moyenne, tab_MoyenneType);
+                hideGif();
+        });
+    };
+
+
+    function DisplayGraphConsoChauffageAnnee(tab_Legend, tab_Perso, tab_Moyenne, tab_MoyenneType) {
+        var ctx = document.getElementById("ch_ConsoChauffageMoyenne").getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+
+            // The data for our dataset
+            data: {
+                labels: tab_Legend,
+                datasets: [
+                    { label: "Ma consommation", fill: false, borderColor: '#EF9A9A', data: tab_Perso, },
+                    { label: "Consommation moyenne de la résidence", fill: false, borderColor: '#DCE775', data: tab_Moyenne, },
+                    { label: "Consommation moyenne des appartements similaires", fill: false, borderColor: '#A5D6A7', data: tab_MoyenneType, }
+                ]
+            },
+
+            // Configuration options go here
+            options: {
+                legend: {
+                    position: 'left',
+                }
+            }
+        });
+    }
+
+    function DisplayConsoAnneePie(tab_Legend, tab_Perso, tab_Moyenne, tab_MoyenneType) {
+        var ctx = document.getElementById('ch_ConsoChauffageMoyennePie').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [
+                        tab_Perso[0],
+                        tab_Perso[1],
+                        tab_Perso[2],
+                        tab_Perso[3],
+                        tab_Perso[4],
+                        tab_Perso[5],
+                        tab_Perso[6],
+                    ],
+                    backgroundColor: ['#F48FB1', '#FFAB91', '#FFCC80', '#E6EE9C', '#C5E1A5', '#A5D6A7', '#90CAF9',],
+                    label: 'Ma consommation'
+                },
+                    {
+                        data: [
+                            tab_MoyenneType[0],
+                            tab_MoyenneType[1],
+                            tab_MoyenneType[2],
+                            tab_MoyenneType[3],
+                            tab_MoyenneType[4],
+                            tab_MoyenneType[5],
+                            tab_MoyenneType[6],
+                        ],
+                        backgroundColor: ['#F8BBD0', '#FFCCBC', '#FFE0B2', '#F0F4C3', '#DCEDC8', '#C8E6C9', '#BBDEFB',],
+                        label: 'Consommation moyenne similaire'
+                    },
+                    {
+                        data: [
+                            tab_Moyenne[0],
+                            tab_Moyenne[1],
+                            tab_Moyenne[2],
+                            tab_Moyenne[3],
+                            tab_Moyenne[4],
+                            tab_Moyenne[5],
+                            tab_Moyenne[6],
+                        ],
+                        backgroundColor: ['#FCE4EC', '#FBE9E7', '#FFF3E0', '#F9FBE7', '#F1F8E9', '#E8F5E9', '#E3F2FD',],
+                        label: 'Consommation moyenne'
+                    }
+                ],
+                labels: tab_Legend
+            },
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'left',
+
+                },
+
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                }
+            }
+        });
+    }
+
+
+
+
+     function RefreshTableauConsoChauffageTotal() {
+        var baseUrl = '@Url.Content("~/Home/GetConsommationsMoyennesTotal/")';
+        var tab_Annee = new Array();
+        var tab_Perso = new Array();
+        var tab_Moyenne = new Array();
+        var tab_MoyenneType = new Array();
+
+            $.getJSON(baseUrl, {paramApptId: @ViewBag.ApptId }, function (result) {
+                $.each(result, function (index, itemData) {
+                    var Annee = itemData.annee;
+                    var perso = itemData.maConsoTotale;
+                    var moyenne = itemData.consoMoyTotale;
+                    var moyenneType = itemData.consoTypeTotale;
+
+                    tab_Annee.push(Annee);
+                    tab_Perso.push(perso);
+                    tab_Moyenne.push(moyenne);
+                    tab_MoyenneType.push(moyenneType);
+                 
+                });
+                DisplayGraphConsoChauffageTotal(tab_Annee, tab_Perso, tab_Moyenne, tab_MoyenneType)
+        });
+
+    };
+
+    function DisplayGraphConsoChauffageTotal(tab_Annee, tab_Perso, tab_Moyenne, tab_MoyenneType) {
+        var ctx = document.getElementById("ch_ConsoChauffageTotal").getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+
+            // The data for our dataset
+            data: {
+                labels: tab_Annee,
+                datasets: [
+                    { label: "Ma consommation", fill: false, borderColor: '#EF9A9A', data: tab_Perso, },
+                    { label: "Consommation moyenne de la résidence", fill: false, borderColor: '#DCE775', data: tab_Moyenne, },
+                    { label: "Consommation moyenne des appartements similaires", fill: false, borderColor: '#A5D6A7', data: tab_MoyenneType, }
+                ]
+            },
+
+            // Configuration options go here
+            options: {
+                legend: {
+                    position: 'left',
+                }
+            }
+        });
+    }
+
+
+
+</script>
+
+
+
+
+<!--TITRE-->
+<div>
+    <h1 class="display-4">
+        Informations générales pour
+        <img class="hvr-grow" onClick="ChangerAnneeViaImage(-1)" src='@Url.Content("~/Content/Previous_Orange_50.png")' />
+        <span class="display-4" id="chp_annee" name="Annee" type="text">2018</span>
+        <img class="hvr-grow" onClick="ChangerAnneeViaImage(1)" src='@Url.Content("~/Content/Next_Orange_50.png")' />
+    </h1>
+</div>
+
+
+
+<h4 class="col-sm-12 titre-bloc">Ma consommation par rapport à la consommation moyenne de la résidence</h4>
+<div class="sous-partie">
+
+    <canvas width="300" height="100" id="ch_ConsoChauffageMoyenne"></canvas>
+
+    <div class="row">
+    </div>
+</div><br /><br />
+
+
+<h4 class="col-sm-12 titre-bloc">Répartition de ma consommation par rapport à la résidence</h4>
+<div class="sous-partie">
+    <div class="row">
+        <div class="col-sm-1">
+        </div>
+        <div class="col-sm-7">
+            <canvas id="ch_ConsoChauffageMoyennePie"></canvas>
+        </div>
+        <div class="col-sm-4">
+            <p><img src=' @Url.Content("~/Content/Icones/")icone_moyenne.png' /> Ma consommation</p>
+            <p><img src=' @Url.Content("~/Content/Icones/")icone_moyenneType.png' /> Consommation moyenne des appartements similaires</p>
+            <p><img src=' @Url.Content("~/Content/Icones/")icone_moyenneTotal.png' /> Consommation moyenne de la résidence</p>
+        </div>
+
+    </div>
+</div><br /><br />
+
+
+<h4 class="col-sm-12 titre-bloc">Evolution des consommations</h4>
+<div class="sous-partie">
+    <div class="row">
+        <canvas width="300" height="100" id="ch_ConsoChauffageTotal"></canvas>
+       
+    </div>
+</div><br /><br />
