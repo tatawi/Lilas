@@ -1,0 +1,20 @@
+  alter table Appartement
+  add IsIsolationPartielle bit,
+  IsIsolationTotale bit,
+  IsValvesAuto bit
+  
+  
+    Create table Travaux 
+  (TravailId int not null IDENTITY(1,1) PRIMARY KEY,
+  type varchar(20),
+  AppartementId int,
+  Prix int,
+  Entreprise varchar(max),
+  Contact varchar(max),
+  TypeAppartement varchar(2) )
+  
+  
+    update Appartement
+  set IsIsolationPartielle =0,
+  IsIsolationTotale=0,
+  IsValvesAuto=0

@@ -27,7 +27,17 @@ namespace Lilas.Models
             this.Type = appt.Type;
             this.IsDoubleVitrage = appt.IsDoubleVitrage;
             this.IsRobinetsThermo = appt.IsRobinetsThermo;
+            this.IsIsolationPartielle = appt.IsIsolationPartielle;
+            this.IsIsolationTotale = appt.IsIsolationTotale;
+            this.IsValvesAuto = appt.IsValvesAuto;
             this.Partager = appt.Partager;
+
+            this.InfosVitrage = new Travail();
+            this.InfosIsolationPartielle = new Travail();
+            this.InfosIsolationTotale = new Travail();
+            this.InfosRobinets = new Travail();
+            this.InfosValves = new Travail();
+
 
             if (appt.Orientation.Contains("Nord")) this.OrientationNS = "Nord";
             if (appt.Orientation.Contains("Sud")) this.OrientationNS = "Sud";
@@ -43,6 +53,24 @@ namespace Lilas.Models
                 this.IsEscalierA=true;
             else
                 this.IsEscalierA = false;
+
+            if(appt.listeTravaux.Count>0)
+            {
+                if(appt.listeTravaux.Any(tr=>tr.type==EnumTravail.DoubleVitrage))
+                    this.InfosVitrage = appt.listeTravaux.FirstOrDefault(tr => tr.type == EnumTravail.DoubleVitrage);
+
+                if (appt.listeTravaux.Any(tr => tr.type == EnumTravail.IsolationPartielle))
+                    this.InfosIsolationPartielle = appt.listeTravaux.FirstOrDefault(tr => tr.type == EnumTravail.IsolationPartielle);
+
+                if (appt.listeTravaux.Any(tr => tr.type == EnumTravail.IsolationTotale))
+                    this.InfosIsolationTotale = appt.listeTravaux.FirstOrDefault(tr => tr.type == EnumTravail.IsolationTotale);
+
+                if (appt.listeTravaux.Any(tr => tr.type == EnumTravail.Robinets))
+                    this.InfosRobinets = appt.listeTravaux.FirstOrDefault(tr => tr.type == EnumTravail.Robinets);
+
+                if (appt.listeTravaux.Any(tr => tr.type == EnumTravail.Valves))
+                    this.InfosValves = appt.listeTravaux.FirstOrDefault(tr => tr.type == EnumTravail.Valves);
+            }
 
             
 
@@ -62,6 +90,14 @@ namespace Lilas.Models
         public string Type { get; set; }
         public bool IsDoubleVitrage { get; set; }
         public bool IsRobinetsThermo { get; set; }
+        public bool IsIsolationPartielle { get; set; }
+        public bool IsIsolationTotale { get; set; }
+        public bool IsValvesAuto { get; set; }
+        public Travail InfosVitrage { get; set; }
+        public Travail InfosIsolationTotale { get; set; }
+        public Travail InfosIsolationPartielle{ get; set; }
+        public Travail InfosRobinets { get; set; }
+        public Travail InfosValves { get; set; }
         public string OrientationNS { get; set; }
         public string OrientationEO { get; set; }
 

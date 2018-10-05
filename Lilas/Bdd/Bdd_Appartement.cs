@@ -28,7 +28,7 @@ namespace Lilas.Bdd
             using (var conn = new SqlConnection(this.connectionString))
             {
                 conn.Open();
-                using (var cmd = new SqlCommand("SELECT UserName, Appartement, Batiment, Escalier, Etage, Porte, Type, IsDoubleVitrage, IsRobinetsThermo, Orientation, Partager FROM Appartement WHERE AppartementId=@paramApptId", conn))
+                using (var cmd = new SqlCommand("SELECT UserName, Appartement, Batiment, Escalier, Etage, Porte, Type, IsDoubleVitrage, IsRobinetsThermo, Orientation, Partager, IsIsolationPartielle, IsIsolationTotale, IsValvesAuto FROM Appartement WHERE AppartementId=@paramApptId", conn))
                 {
                     cmd.Parameters.AddWithValue("paramApptId", ApptId);
                     using (var reader = cmd.ExecuteReader())
@@ -46,6 +46,9 @@ namespace Lilas.Bdd
                             appt.IsRobinetsThermo = reader.GetBoolean(8);
                             appt.Orientation = reader.GetString(9);
                             appt.Partager = reader.GetBoolean(10);
+                            appt.IsIsolationPartielle = reader.GetBoolean(11);
+                            appt.IsIsolationTotale = reader.GetBoolean(12);
+                            appt.IsValvesAuto = reader.GetBoolean(13);
                         }
                     }
                 }
@@ -64,7 +67,7 @@ namespace Lilas.Bdd
             using (var conn = new SqlConnection(this.connectionString))
             {
                 conn.Open();
-                using (var cmd = new SqlCommand("SELECT AppartementId, UserName, Batiment, Escalier, Etage, Porte, Type, IsDoubleVitrage, IsRobinetsThermo, Orientation, Partager FROM Appartement WHERE Appartement=@paramApptId", conn))
+                using (var cmd = new SqlCommand("SELECT AppartementId, UserName, Batiment, Escalier, Etage, Porte, Type, IsDoubleVitrage, IsRobinetsThermo, Orientation, Partager, IsIsolationPartielle, IsIsolationTotale, IsValvesAuto FROM Appartement WHERE Appartement=@paramApptId", conn))
                 {
                     cmd.Parameters.AddWithValue("paramApptId", ApptName);
                     using (var reader = cmd.ExecuteReader())
@@ -82,6 +85,9 @@ namespace Lilas.Bdd
                             appt.IsRobinetsThermo = reader.GetBoolean(8);
                             appt.Orientation = reader.GetString(9);
                             appt.Partager = reader.GetBoolean(10);
+                            appt.IsIsolationPartielle = reader.GetBoolean(11);
+                            appt.IsIsolationTotale = reader.GetBoolean(12);
+                            appt.IsValvesAuto = reader.GetBoolean(13);
                         }
                     }
                 }
@@ -90,6 +96,7 @@ namespace Lilas.Bdd
             return appt;
         }
 
+
         public List<Appartement> Get_AllAppartements()
         {
             List<Appartement> listAppt = new List<Appartement>();
@@ -97,7 +104,7 @@ namespace Lilas.Bdd
             using (var conn = new SqlConnection(this.connectionString))
             {
                 conn.Open();
-                using (var cmd = new SqlCommand("SELECT AppartementId, UserName, Appartement, Batiment, Escalier, Etage, Porte, Type, IsDoubleVitrage, IsRobinetsThermo, Orientation, Partager FROM Appartement", conn))
+                using (var cmd = new SqlCommand("SELECT AppartementId, UserName, Appartement, Batiment, Escalier, Etage, Porte, Type, IsDoubleVitrage, IsRobinetsThermo, Orientation, Partager, IsIsolationPartielle, IsIsolationTotale, IsValvesAuto FROM Appartement", conn))
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -116,6 +123,9 @@ namespace Lilas.Bdd
                             appt.IsRobinetsThermo = reader.GetBoolean(9);
                             appt.Orientation = reader.GetString(10);
                             appt.Partager = reader.GetBoolean(11);
+                            appt.IsIsolationPartielle = reader.GetBoolean(12);
+                            appt.IsIsolationTotale = reader.GetBoolean(13);
+                            appt.IsValvesAuto = reader.GetBoolean(14);
                             listAppt.Add(appt);
                         }
                     }
@@ -125,11 +135,6 @@ namespace Lilas.Bdd
 
             return listAppt;
         }
-
-
-
-
-
 
 
         public bool IsAppartementNamePresent(string apptName)
@@ -170,7 +175,7 @@ namespace Lilas.Bdd
                 using (SqlConnection conn = new SqlConnection(this.connectionString))
                 {
                     conn.Open();
-                    string sql = "INSERT INTO Appartement VALUES(@UserName,@Appartement,@Batiment,@Etage,@Porte,@Type,@IsDoubleVitrage, @IsRobinetsThermo, @Orientation, @Partager,@Escalier)";
+                    string sql = "INSERT INTO Appartement VALUES(@UserName,@Appartement,@Batiment,@Etage,@Porte,@Type,@IsDoubleVitrage, @IsRobinetsThermo, @Orientation, @Partager,@Escalier, @IsIsolationPartielle, @IsIsolationTotale , @IsValvesAuto)";
 
                     SqlCommand cmd = new SqlCommand(sql, conn);
                     cmd.Parameters.Add("@UserName", SqlDbType.VarChar).Value = appt.UserName;
@@ -184,6 +189,9 @@ namespace Lilas.Bdd
                     cmd.Parameters.Add("@IsRobinetsThermo", SqlDbType.Bit).Value = appt.IsRobinetsThermo;
                     cmd.Parameters.Add("@Orientation", SqlDbType.VarChar).Value = appt.Orientation;
                     cmd.Parameters.Add("@Partager", SqlDbType.Bit).Value = appt.Partager;
+                    cmd.Parameters.Add("@IsIsolationPartielle", SqlDbType.Bit).Value = appt.IsIsolationPartielle;
+                    cmd.Parameters.Add("@IsIsolationTotale", SqlDbType.Bit).Value = appt.IsIsolationTotale;
+                    cmd.Parameters.Add("@IsValvesAuto", SqlDbType.Bit).Value = appt.IsValvesAuto;
 
                     cmd.CommandType = CommandType.Text;
                     cmd.ExecuteNonQuery();
@@ -211,7 +219,12 @@ namespace Lilas.Bdd
                 using (SqlConnection conn = new SqlConnection(this.connectionString))
                 {
                     conn.Open();
-                    string sql = "UPDATE Appartement SET Appartement=@paramAppartement, UserName=@paramUsername, Type=@paramType, IsDoubleVitrage=@paramIsDoubleVitrage, IsRobinetsThermo = @paramIsRobinetsThermo, Orientation = @paramOrientation, Partager=@paramPartager WHERE AppartementId=@paramApptId";
+                    string sql = "UPDATE Appartement SET Appartement=@paramAppartement, UserName=@paramUsername, " +
+                        "Type=@paramType, IsDoubleVitrage=@paramIsDoubleVitrage, " +
+                        "IsRobinetsThermo = @paramIsRobinetsThermo, Orientation = @paramOrientation, " +
+                        "Partager=@paramPartager, IsIsolationPartielle = @paramIsIsolationPartielle, " +
+                        "IsIsolationTotale = @paramIsIsolationTotale, IsValvesAuto = @paramIsValvesAuto" +
+                        "WHERE AppartementId=@paramApptId";
 
                     SqlCommand cmd = new SqlCommand(sql, conn);
                     cmd.Parameters.Add("@paramApptId", SqlDbType.VarChar).Value = appt.AppartementId;
@@ -222,6 +235,9 @@ namespace Lilas.Bdd
                     cmd.Parameters.Add("@paramIsRobinetsThermo", SqlDbType.Bit).Value = appt.IsRobinetsThermo;
                     cmd.Parameters.Add("@paramOrientation", SqlDbType.VarChar).Value = appt.Orientation;
                     cmd.Parameters.Add("@paramPartager", SqlDbType.Bit).Value = appt.Partager;
+                    cmd.Parameters.Add("@paramIsIsolationPartielle", SqlDbType.Bit).Value = appt.IsIsolationPartielle;
+                    cmd.Parameters.Add("@paramIsIsolationTotale", SqlDbType.Bit).Value = appt.IsIsolationTotale;
+                    cmd.Parameters.Add("@paramIsValvesAuto", SqlDbType.Bit).Value = appt.IsValvesAuto;
 
                     cmd.CommandType = CommandType.Text;
                     cmd.ExecuteNonQuery();

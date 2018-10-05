@@ -62,237 +62,414 @@
 @using (Html.BeginForm("MonAppartement", "Appartement", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
 
-    <!--Batiment-->
-    <div class="col-sm-3 form-group">
-        <span>Batiment :</span>
-        <div class="valeur">
-            @if (Model.IsBatA)
-            {
-                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_bat-1">
-                    <input type="radio" id="rb_bat-1" class="mdl-radio__button" name="rb_bat" value="1" checked disabled>
-                    <span class="mdl-radio__label normaltext">A4</span>
-                </label>
-                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_bat-2">
-                    <input type="radio" id="rb_bat-2" class="mdl-radio__button" name="rb_bat" value="2" disabled>
-                    <span class="mdl-radio__label normaltext">B</span>
-                </label>
-            }
-            else
-            {
-                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_bat-1">
-                    <input type="radio" id="rb_bat-1" class="mdl-radio__button" name="rb_bat" value="1" disabled>
-                    <span class="mdl-radio__label normaltext">A4</span>
-                </label>
-                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_bat-2">
-                    <input type="radio" id="rb_bat-2" class="mdl-radio__button" name="rb_bat" value="2" checked disabled>
-                    <span class="mdl-radio__label normaltext">B</span>
-                </label>
-            }
+
+    <!--INFORMATIONS DE L'APPARTEMENT-->
+    <h4 class="col-sm-12 titre-bloc">Informations de l'appartement</h4>
+    <div class="sous-partie">
+        <div class="row">
+            <!--Batiment-->
+            <div class="col-sm-3 form-group">
+                <span>Batiment :</span>
+                <div class="valeur">
+                    @if (Model.IsBatA)
+                    {
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_bat-1">
+                            <input type="radio" id="rb_bat-1" class="mdl-radio__button" name="rb_bat" value="1" checked disabled>
+                            <span class="mdl-radio__label normaltext">A4</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_bat-2">
+                            <input type="radio" id="rb_bat-2" class="mdl-radio__button" name="rb_bat" value="2" disabled>
+                            <span class="mdl-radio__label normaltext">B</span>
+                        </label>
+                    }
+                    else
+                    {
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_bat-1">
+                            <input type="radio" id="rb_bat-1" class="mdl-radio__button" name="rb_bat" value="1" disabled>
+                            <span class="mdl-radio__label normaltext">A4</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_bat-2">
+                            <input type="radio" id="rb_bat-2" class="mdl-radio__button" name="rb_bat" value="2" checked disabled>
+                            <span class="mdl-radio__label normaltext">B</span>
+                        </label>
+                    }
 
 
-        </div>
-    </div>
-
-    <!--Escalier-->
-    <div class="col-sm-3 form-group">
-        <span class="normaltext">Escalier :</span>
-        <div class="valeur">
-            @if (Model.IsEscalierA)
-            {
-                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_esc-1">
-                    <input type="radio" id="rb_esc-1" class="mdl-radio__button" name="rb_esc" value="1" checked disabled>
-                    <span class="mdl-radio__label normaltext">A</span>
-                </label>
-                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_esc-2">
-                    <input type="radio" id="rb_esc-2" class="mdl-radio__button" name="rb_esc" value="2" disabled>
-                    <span class="mdl-radio__label normaltext">B</span>
-                </label>
-            }
-            else
-            {
-                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_esc-1">
-                    <input type="radio" id="rb_esc-1" class="mdl-radio__button" name="rb_esc" value="1" disabled>
-                    <span class="mdl-radio__label normaltext">A</span>
-                </label>
-                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_esc-2">
-                    <input type="radio" id="rb_esc-2" class="mdl-radio__button" name="rb_esc" value="2" checked disabled>
-                    <span class="mdl-radio__label normaltext">B</span>
-                </label>
-            }
-
-        </div>
-    </div>
-
-    <!--Etage-->
-    <div class="col-sm-3 form-group">
-        <span>Etage :</span>
-        <div class="valeur">
-            <div class="noPadding mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.DisplayFor(m => m.Etage, new { @class = "mdl-textfield__input", @id = "ch_etage" })
-                <span class="mdl-textfield__error">Incorrect</span>
+                </div>
             </div>
-        </div>
 
-    </div>
+            <!--Escalier-->
+            <div class="col-sm-3 form-group">
+                <span class="normaltext">Escalier :</span>
+                <div class="valeur">
+                    @if (Model.IsEscalierA)
+                    {
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_esc-1">
+                            <input type="radio" id="rb_esc-1" class="mdl-radio__button" name="rb_esc" value="1" checked disabled>
+                            <span class="mdl-radio__label normaltext">A</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_esc-2">
+                            <input type="radio" id="rb_esc-2" class="mdl-radio__button" name="rb_esc" value="2" disabled>
+                            <span class="mdl-radio__label normaltext">B</span>
+                        </label>
+                    }
+                    else
+                    {
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_esc-1">
+                            <input type="radio" id="rb_esc-1" class="mdl-radio__button" name="rb_esc" value="1" disabled>
+                            <span class="mdl-radio__label normaltext">A</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="rb_esc-2">
+                            <input type="radio" id="rb_esc-2" class="mdl-radio__button" name="rb_esc" value="2" checked disabled>
+                            <span class="mdl-radio__label normaltext">B</span>
+                        </label>
+                    }
 
-    <!--porte-->
-    <div class="col-sm-3 form-group">
-        <span>porte :</span>
-        <div class="valeur">
-            <div class="noPadding mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.DisplayFor(m => m.Porte, new { @class = "mdl-textfield__input", @id = "ch_porte" })
-                <span class="mdl-textfield__error">Incorrect</span>
+                </div>
             </div>
-        </div>
-    </div>
 
-    <div class="col-sm-12 clear"></div>
+            <!--Etage-->
+            <div class="col-sm-3 form-group">
+                <span>Etage :</span>
+                <div class="valeur">
+                    <div class="noPadding mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        @Html.DisplayFor(m => m.Etage, new { @class = "mdl-textfield__input", @id = "ch_etage" })
+                        <span class="mdl-textfield__error">Incorrect</span>
+                    </div>
+                </div>
 
-
-    <!--Appartement-->
-    <div class="col-sm-6 form-group ">
-        <span>Appartement :</span>
-        <div class="valeur">
-            <div class="noPadding mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.TextBoxFor(m => m.Appartement, new { @class = "mdl-textfield__input", @id = "ch_appt" })
-                <span class="mdl-textfield__error">Appartement déjà créé !</span>
             </div>
-        </div>
-    </div>
 
-    <!--Nom-->
-    <div class="col-sm-6 form-group">
-        <span>Nom :</span>
-        <div class="valeur">
-            <div class="noPadding mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.TextBoxFor(m => m.UserName, new { @class = "mdl-textfield__input", @id = "ch_user" })
-                <span class="mdl-textfield__error">Incorrect</span>
+            <!--porte-->
+            <div class="col-sm-3 form-group">
+                <span>porte :</span>
+                <div class="valeur">
+                    <div class="noPadding mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        @Html.DisplayFor(m => m.Porte, new { @class = "mdl-textfield__input", @id = "ch_porte" })
+                        <span class="mdl-textfield__error">Incorrect</span>
+                    </div>
+                </div>
             </div>
+
+            <div class="col-sm-12 clear"></div>
+
+            <!--Appartement-->
+            <div class="col-sm-6 form-group ">
+                <span>Appartement :</span>
+                <div class="valeur">
+                    <div class="noPadding mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        @Html.TextBoxFor(m => m.Appartement, new { @class = "mdl-textfield__input", @id = "ch_appt" })
+                        <span class="mdl-textfield__error">Appartement déjà créé !</span>
+                    </div>
+                </div>
+            </div>
+
+            <!--Nom-->
+            <div class="col-sm-6 form-group">
+                <span>Nom :</span>
+                <div class="valeur">
+                    <div class="noPadding mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        @Html.TextBoxFor(m => m.UserName, new { @class = "mdl-textfield__input", @id = "ch_user" })
+                        <span class="mdl-textfield__error">Incorrect</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 clear"></div>
+
+            <!--Type appartement-->
+            <div class="col-sm-6 form-group">
+                <span>Type :</span>
+                <div class="valeur">
+                    @if (Model.Type == "T2")
+                    {
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type1">
+                            <input checked class="mdl-radio__button" id="Type1" name="rb_type" type="radio"
+                                   value="on" onclick="majType('T2');" checked>
+                            <span class="mdl-radio__label normaltext">T2</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type2">
+                            <input class="mdl-radio__button" id="Type2" name="rb_type" type="radio" value="off" onclick="majType('T3');">
+                            <span class="mdl-radio__label normaltext">T3</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type3">
+                            <input class="mdl-radio__button" id="Type3" name="rb_type" type="radio" value="off" onclick="majType('T4');">
+                            <span class="mdl-radio__label normaltext">T4</span>
+                        </label>
+                    }
+
+                    @if (Model.Type == "T3")
+                    {
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type1">
+                            <input checked class="mdl-radio__button" id="Type1" name="rb_type" type="radio"
+                                   value="on" onclick="majType('T2');">
+                            <span class="mdl-radio__label normaltext">T2</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type2">
+                            <input class="mdl-radio__button" id="Type2" name="rb_type" type="radio" value="off" onclick="majType('T3');" checked>
+                            <span class="mdl-radio__label normaltext">T3</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type3">
+                            <input class="mdl-radio__button" id="Type3" name="rb_type" type="radio" value="off" onclick="majType('T4');">
+                            <span class="mdl-radio__label normaltext">T4</span>
+                        </label>
+                    }
+
+                    @if (Model.Type == "T4")
+                    {
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type1">
+                            <input checked class="mdl-radio__button" id="Type1" name="rb_type" type="radio"
+                                   value="on" onclick="majType('T2');">
+                            <span class="mdl-radio__label normaltext">T2</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type2">
+                            <input class="mdl-radio__button" id="Type2" name="rb_type" type="radio" value="off" onclick="majType('T3');">
+                            <span class="mdl-radio__label normaltext">T3</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type3">
+                            <input class="mdl-radio__button" id="Type3" name="rb_type" type="radio" value="off" onclick="majType('T4');" checked>
+                            <span class="mdl-radio__label normaltext">T4</span>
+                        </label>
+                    }
+
+
+                </div>
+                @Html.TextBoxFor(m => m.Type, new { @class = "hidden", @id = "ch_type" })
+            </div>
+
+            <!--Orientation-->
+            <div class="col-sm-6 form-group">
+                <span>Orientation (@Model.OrientationNS @Model.OrientationEO):</span>
+                <div class="valeur">
+                    <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_sud-1">
+                        <input type="radio" id="ch_or_sud-1" class="mdl-radio__button" name="ch_or_ns" value="1" onclick="majOrientNS('Sud');">
+                        <span class="mdl-radio__label normaltext">Sud</span>
+                    </label>
+                    <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_nord-2">
+                        <input type="radio" id="ch_or_nord-2" class="mdl-radio__button" name="ch_or_ns" value="2" onclick="majOrientNS('Nord ');">
+                        <span class="mdl-radio__label normaltext">Nord</span>
+                    </label>
+                    <br />
+                    <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_est-1">
+                        <input type="radio" id="ch_or_est-1" class="mdl-radio__button" name="ch_or_eo" value="1" onclick="majOrientEO('Est');">
+                        <span class="mdl-radio__label normaltext">Est </span>
+                    </label>
+                    <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_ouest-2">
+                        <input type="radio" id="ch_or_ouest-2" class="mdl-radio__button" name="ch_or_eo" value="2" onclick="majOrientEO('Ouest');">
+                        <span class="mdl-radio__label normaltext">Ouest</span>
+                    </label>
+                </div>
+                @Html.TextBoxFor(m => m.OrientationNS, new { @class = "hidden", @id = "ch_orientNS" })
+                @Html.TextBoxFor(m => m.OrientationEO, new { @class = "hidden", @id = "ch_orientEO" })
+            </div>
+
+            <!--Message-->
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8 message message-info">
+                <span>Les champs "Appartement" et "Nom" seront necessaires pour vous identifier.</span><br />
+                <span>Le partage des données permet de partager les caractéristiques de votre logement (Double vitrage, valves, orientation, type appartement et consommation moyenne annuelle). Vous devez accepter de partager ces informations pour avoir la possibilité de voir ces même informations pour d'autres logements.</span>
+            </div>
+            <div class="col-sm-2"></div>
         </div>
-    </div>
-
-    <div class="col-sm-12 clear"></div>
+    </div><br /><br />
 
 
-    <!--Type appartement-->
-    <div class="col-sm-6 form-group">
-        <span>Type :</span>
-        <div class="valeur">
-            @if (Model.Type == "T2")
-            {
-                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type1">
-                    <input checked class="mdl-radio__button" id="Type1" name="rb_type" type="radio"
-                           value="on" onclick="majType('T2');" checked>
-                    <span class="mdl-radio__label normaltext">T2</span>
-                </label>
-                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type2">
-                    <input class="mdl-radio__button" id="Type2" name="rb_type" type="radio" value="off" onclick="majType('T3');">
-                    <span class="mdl-radio__label normaltext">T3</span>
-                </label>
-                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type3">
-                    <input class="mdl-radio__button" id="Type3" name="rb_type" type="radio" value="off" onclick="majType('T4');">
-                    <span class="mdl-radio__label normaltext">T4</span>
-                </label>
-            }
 
-            @if (Model.Type == "T3")
-            {
-                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type1">
-                    <input checked class="mdl-radio__button" id="Type1" name="rb_type" type="radio"
-                           value="on" onclick="majType('T2');">
-                    <span class="mdl-radio__label normaltext">T2</span>
-                </label>
-                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type2">
-                    <input class="mdl-radio__button" id="Type2" name="rb_type" type="radio" value="off" onclick="majType('T3');" checked>
-                    <span class="mdl-radio__label normaltext">T3</span>
-                </label>
-                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type3">
-                    <input class="mdl-radio__button" id="Type3" name="rb_type" type="radio" value="off" onclick="majType('T4');">
-                    <span class="mdl-radio__label normaltext">T4</span>
-                </label>
-            }
 
-            @if (Model.Type == "T4")
-            {
-                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type1">
-                    <input checked class="mdl-radio__button" id="Type1" name="rb_type" type="radio"
-                           value="on" onclick="majType('T2');">
-                    <span class="mdl-radio__label normaltext">T2</span>
-                </label>
-                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type2">
-                    <input class="mdl-radio__button" id="Type2" name="rb_type" type="radio" value="off" onclick="majType('T3');">
-                    <span class="mdl-radio__label normaltext">T3</span>
-                </label>
-                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="Type3">
-                    <input class="mdl-radio__button" id="Type3" name="rb_type" type="radio" value="off" onclick="majType('T4');" checked>
-                    <span class="mdl-radio__label normaltext">T4</span>
-                </label>
-            }
+    <!--TRAVAUX REALISES-->
+    <h4 class="col-sm-12 titre-bloc">Travaux réalisés</h4>
+    <div class="sous-partie">
+        <div class="row">
 
+            <div class="col-sm-1 form-group">
+                <span>Type</span>
+            </div>
+
+            <div class="col-sm-3 form-group">
+                <span>Réalisé</span>
+            </div>
+
+            <div class="col-sm-1 form-group">
+                <span>Prix</span>
+            </div>
+
+            <div class="col-sm-4 form-group">
+                <span>Entreprise / Artisan</span>
+            </div>
+
+            <div class="col-sm-3 form-group">
+                <span>Contact</span>
+            </div>
+
+
+
+            <!--Double vitrage-->
+            <div class="col-sm-1 form-group">
+                <img src='@Url.Content("~/Content/Icones/")trav_doubleVitrage.png'/>
+            </div>
+            
+            <div class="col-sm-3 form-group">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_vitre">
+                    @Html.CheckBoxFor(m => m.IsDoubleVitrage, new { @id = "ch_vitre", @class = "mdl-checkbox__input" })
+                    <span class="mdl-checkbox__label normaltext">Double vitrage</span>
+                </label>
+            </div>
+       
+            <div class="col-sm-1 form-group">
+                @Html.TextBoxFor(m => m.InfosVitrage.Prix, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_prix" })
+            </div>
+
+            <div class="col-sm-4 form-group">
+                @Html.TextBoxFor(m => m.InfosVitrage.Entreprise, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_Entreprise" })
+            </div>
+
+            <div class="col-sm-3 form-group">
+                @Html.TextBoxFor(m => m.InfosVitrage.Contact, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_Contact" })
+            </div>
+
+
+            <!--Isolation-->
+            <div class="col-sm-1 form-group">
+                <img src='@Url.Content("~/Content/Icones/")trav_isolationTotale.png'/>
+            </div>
+            <div class="col-sm-3 form-group">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_valves">
+                    @Html.CheckBoxFor(m => m.IsIsolationTotale, new { @id = "ch_valves", @class = "mdl-checkbox__input" })
+                    <span class="mdl-checkbox__label normaltext">Isolation intérieure totale</span>
+                </label>
+            </div>
+
+            <div class="col-sm-1 form-group">
+                @Html.TextBoxFor(m => m.InfosIsolationTotale.Prix, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_prix" })
+            </div>
+
+            <div class="col-sm-4 form-group">
+                @Html.TextBoxFor(m => m.InfosIsolationTotale.Entreprise, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_Entreprise" })
+            </div>
+
+            <div class="col-sm-3 form-group">
+                @Html.TextBoxFor(m => m.InfosIsolationTotale.Contact, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_Contact" })
+            </div>
+
+            <!--Isolation partielle-->
+            <div class="col-sm-1 form-group">
+                <img src='@Url.Content("~/Content/Icones/")trav_isolationSmall.png'/>
+            </div>
+            <div class="col-sm-3 form-group">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_valves">
+                    @Html.CheckBoxFor(m => m.IsIsolationPartielle, new { @id = "ch_valves", @class = "mdl-checkbox__input" })
+                    <span class="mdl-checkbox__label normaltext">Isolation intérieure partielle</span>
+                </label>
+            </div>
+
+            <div class="col-sm-1 form-group">
+                @Html.TextBoxFor(m => m.InfosIsolationPartielle.Prix, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_prix" })
+            </div>
+
+            <div class="col-sm-4 form-group">
+                @Html.TextBoxFor(m => m.InfosIsolationPartielle.Entreprise, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_Entreprise" })
+            </div>
+
+            <div class="col-sm-3 form-group">
+                @Html.TextBoxFor(m => m.InfosIsolationPartielle.Contact, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_Contact" })
+            </div>
+
+
+            <!--Robinets-->
+            <div class="col-sm-1 form-group">
+                <img src='@Url.Content("~/Content/Icones/")trav_thermostatiques.png'/>
+            </div>
+            <div class="col-sm-3 form-group">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_valves">
+                    @Html.CheckBoxFor(m => m.IsRobinetsThermo, new { @id = "ch_valves", @class = "mdl-checkbox__input" })
+                    <span class="mdl-checkbox__label normaltext">Robinets Thermostatiques</span>
+                </label>
+            </div>
+
+            <div class="col-sm-1 form-group">
+                @Html.TextBoxFor(m => m.InfosRobinets.Prix, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_prix" })
+            </div>
+
+            <div class="col-sm-4 form-group">
+                @Html.TextBoxFor(m => m.InfosRobinets.Entreprise, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_Entreprise" })
+            </div>
+
+            <div class="col-sm-3 form-group">
+                @Html.TextBoxFor(m => m.InfosRobinets.Contact, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_Contact" })
+            </div>
+
+
+            <!--Valves-->
+            <div class="col-sm-1 form-group">
+                <img src='@Url.Content("~/Content/Icones/")trav_valvesAuto.png'/>
+            </div>
+            <div class="col-sm-3 form-group">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_valves">
+                    @Html.CheckBoxFor(m => m.IsValvesAuto, new { @id = "ch_valves", @class = "mdl-checkbox__input" })
+                    <span class="mdl-checkbox__label normaltext">Valves automatiques</span>
+                </label>
+            </div>
+
+            <div class="col-sm-1 form-group">
+                @Html.TextBoxFor(m => m.InfosValves.Prix, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_prix" })
+            </div>
+
+            <div class="col-sm-4 form-group">
+                @Html.TextBoxFor(m => m.InfosValves.Entreprise, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_Entreprise" })
+            </div>
+
+            <div class="col-sm-3 form-group">
+                @Html.TextBoxFor(m => m.InfosValves.Contact, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_Contact" })
+            </div>
+
+            
 
         </div>
-        @Html.TextBoxFor(m => m.Type, new { @class = "hidden", @id = "ch_type" })
-    </div>
-
-    <!--Double vitrage-->
-    <div class="col-sm-6 form-group">
-        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_vitre">
-            @Html.CheckBoxFor(m => m.IsDoubleVitrage, new { @id = "ch_vitre", @class = "mdl-checkbox__input" })
-            <span class="mdl-checkbox__label normaltext">Double vitrage</span>
-        </label>
-    </div>
-    <div class="col-sm-6"></div>
-
-    <!--Robinets-->
-    <div class="col-sm-6 form-group">
-        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_valves">
-            @Html.CheckBoxFor(m => m.IsRobinetsThermo, new { @id = "ch_valves", @class = "mdl-checkbox__input" })
-            <span class="mdl-checkbox__label normaltext">Robinets Thermostatiques / Valves automatiques</span>
-        </label>
-    </div>
+    </div><br /><br />
 
 
 
 
-    <!--Orientation-->
-    <div class="col-sm-6 form-group">
-        <span>Orientation (@Model.OrientationNS @Model.OrientationEO):</span>
-        <div class="valeur">
-            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_sud-1">
-                <input type="radio" id="ch_or_sud-1" class="mdl-radio__button" name="ch_or_ns" value="1" onclick="majOrientNS('Sud');">
-                <span class="mdl-radio__label normaltext">Sud</span>
-            </label>
-            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_nord-2">
-                <input type="radio" id="ch_or_nord-2" class="mdl-radio__button" name="ch_or_ns" value="2" onclick="majOrientNS('Nord ');">
-                <span class="mdl-radio__label normaltext">Nord</span>
-            </label>
-            <br />
-            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_est-1">
-                <input type="radio" id="ch_or_est-1" class="mdl-radio__button" name="ch_or_eo" value="1" onclick="majOrientEO('Est');">
-                <span class="mdl-radio__label normaltext">Est </span>
-            </label>
-            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_ouest-2">
-                <input type="radio" id="ch_or_ouest-2" class="mdl-radio__button" name="ch_or_eo" value="2" onclick="majOrientEO('Ouest');">
-                <span class="mdl-radio__label normaltext">Ouest</span>
-            </label>
+    <!--PARTAGE DES DONNEES-->
+    <h4 class="col-sm-12 titre-bloc">Partage des données</h4>
+    <div class="sous-partie">
+        <div class="row">
+
+            <!--consommation-->
+            <div class="col-sm-12 form-group">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_partager">
+                    @Html.CheckBoxFor(m => m.Partager, new { @id = "ch_partager", @class = "mdl-checkbox__input" })
+                    <span class="mdl-checkbox__label normaltext">Autoriser le partage des données de consommation détaillés de mon appartement</span>
+                </label>
+            </div>
+
+
+            <!--consommation-->
+            <div class="col-sm-12 form-group">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_partager">
+                    @Html.CheckBoxFor(m => m.Partager, new { @id = "ch_partager", @class = "mdl-checkbox__input" })
+                    <span class="mdl-checkbox__label normaltext">Autoriser le partage du prix des travaux réalisés</span>
+                </label>
+            </div>
+
         </div>
-        @Html.TextBoxFor(m => m.OrientationNS, new { @class = "hidden", @id = "ch_orientNS" })
-        @Html.TextBoxFor(m => m.OrientationEO, new { @class = "hidden", @id = "ch_orientEO" })
-    </div>
+    </div><br /><br />
 
-    <div class="col-sm-6 form-group">
-        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_partager">
-            @Html.CheckBoxFor(m => m.Partager, new { @id = "ch_partager", @class = "mdl-checkbox__input" })
-            <span class="mdl-checkbox__label normaltext">Autoriser le partage des données</span>
-        </label>
-    </div>
 
-    <div class="col-sm-1"></div>
-    <div class="col-sm-10 message message-info">
-        <span>Les champs "Appartement" et "Nom" seront necessaires pour vous identifier.</span><br />
-        <span>Le partage des données permet de partager les caractéristiques de votre logement (Double vitrage, valves, orientation, type appartement et consommation moyenne annuelle). Vous devez accepter de partager ces informations pour avoir la possibilité de voir ces même informations pour d'autres logements.</span>
-    </div>
-    <div class="col-sm-1"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

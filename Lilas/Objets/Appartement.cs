@@ -10,7 +10,7 @@ namespace Lilas.Objets
 
         public Appartement()
         {
-
+            listeTravaux = new List<Travail>();
         }
 
 
@@ -24,6 +24,9 @@ namespace Lilas.Objets
         public string Type { get; set; }
         public bool IsDoubleVitrage { get; set; }
         public bool IsRobinetsThermo { get; set; }
+        public bool IsIsolationPartielle { get; set; }
+        public bool IsIsolationTotale { get; set; }
+        public bool IsValvesAuto { get; set; }
         public string Orientation { get; set; }
         public bool Partager { get; set; }
 
@@ -41,5 +44,7 @@ namespace Lilas.Objets
         {
             return this.Type.Equals("T4");
         }
+
+        public List<Travail>listeTravaux { get; set; }
     }
 }

@@ -15,12 +15,14 @@ namespace Lilas.Controllers
 
         Bdd_Appartement bdd_appartement;
         Bdd_Consommation bdd_conso;
+        Bdd_Travaux bdd_travaux;
 
 
         public AppartementController()
         {
             this.bdd_appartement = new Bdd_Appartement();
             this.bdd_conso = new Bdd_Consommation();
+            this.bdd_travaux = new Bdd_Travaux();
         }
 
 
@@ -72,6 +74,7 @@ namespace Lilas.Controllers
         public ActionResult MonAppartement()
         {
             Appartement user = bdd_appartement.Get_AppartementFromName(User.Identity.Name);
+            user.listeTravaux = bdd_travaux.Get_TravauxAppt(user.AppartementId);
             MonAppartementViewModel vm = new MonAppartementViewModel(user);
 
             return View(vm);
@@ -123,6 +126,12 @@ namespace Lilas.Controllers
                 isModify = true;
                 user.IsRobinetsThermo = vm.IsRobinetsThermo;
             }
+
+
+
+
+
+
 
             if (user.Partager != vm.Partager)
             {
