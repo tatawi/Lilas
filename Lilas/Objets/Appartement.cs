@@ -29,6 +29,7 @@ namespace Lilas.Objets
         public bool IsValvesAuto { get; set; }
         public string Orientation { get; set; }
         public bool Partager { get; set; }
+        public bool PartagerTravaux { get; set; }
 
         public bool IsT2()
         {

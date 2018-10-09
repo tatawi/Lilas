@@ -8,21 +8,33 @@
 
     $(document).ready(function () {
 
-        var orientationNS = '@Model.OrientationNS';
-        var orientationEO = '@Model.OrientationEO';
 
-        if (orientationNS.includes('Nord')){
-            document.getElementById('ch_or_nord-2').checked = true;
-        }
-        if (orientationNS.includes('Sud')) {
-            document.getElementById('ch_or_sud-1').checked = true;
-        }
-        if (orientationEO.includes('Est')) {
-            document.getElementById('ch_or_est-1').checked = true;
-        }
-        if (orientationEO.includes('Ouest')) {
-            document.getElementById('ch_or_ouest-2').checked = true;
-        }
+        //GESTION ORIENTATION
+
+
+
+
+
+        //GESTION MONTANTS 0
+        var chp_Vitrage_Prix = document.getElementById('ch_tr_vitrage_prix');
+        if (chp_Vitrage_Prix.value == 0) { chp_Vitrage_Prix.value = ''; }
+
+        var chp_isoAll_Prix = document.getElementById('ch_tr_isoAll_prix');
+        if (chp_isoAll_Prix.value == 0) { chp_isoAll_Prix.value = ''; }
+
+        var chp_isoSmall_Prix = document.getElementById('ch_tr_isoSmall_prix');
+        if (chp_isoSmall_Prix.value == 0) { chp_isoSmall_Prix.value = ''; }
+
+        var chp_robinets_Prix = document.getElementById('ch_tr_robinets_prix');
+        if (chp_robinets_Prix.value == 0) { chp_robinets_Prix.value = ''; }
+
+        var chp_valves_Prix = document.getElementById('ch_tr_valves_prix');
+        if (chp_valves_Prix.value == 0) { chp_valves_Prix.value = ''; }
+
+
+        //Diplay tableaux travaux
+        //updateTravaux('valves');
+
 
     });
 
@@ -44,6 +56,108 @@
     }
 
 
+
+    function updateTravaux(type) {
+        //var boxIdName = 'ch_' + type;
+        //var box = document.getElementById(boxIdName);
+
+        //var chIdPrix = 'ch_tr_' + type + '_prix';
+        //var chPrix = document.getElementById(chIdPrix);
+
+        //var chIdEntreprise = 'ch_tr_' + type + '_Entreprise';
+        //var chEntreprise = document.getElementById(chIdEntreprise);
+
+        //var chIdContact = 'ch_tr_' + type + '_Contact';
+        //var chContact = document.getElementById(chIdContact);
+
+        //if (box.checked == true) {
+
+
+        //    //chPrix.style.display = 'inline-block';
+        //    //chEntreprise.style.display = 'inline-block';
+        //    //chContact.style.display = 'inline-block';
+        //}
+        //else {
+
+        //    //chPrix.style.display = 'none';
+        //    //chEntreprise.style.display = 'none';
+        //    //chContact.style.display = 'none';
+        //}
+    }
+
+
+    function changeOrient(orient) {
+        var ch_nord = document.getElementById('IsNord');
+        var ch_sud = document.getElementById('IsSud');
+        var ch_est = document.getElementById('IsEst');
+        var ch_ouest = document.getElementById('IsOuest');
+
+
+        if (orient == 'N') {
+            var img = document.getElementById('img_or_N');
+            var imgOpp = document.getElementById('img_or_S');
+            if (img.src.includes('sel')) {
+                img.src = img.src.replace('or_N_sel', 'or_N');
+                ch_nord.value = false;
+            }
+            else {
+                img.src = img.src.replace('or_N', 'or_N_sel');
+                ch_nord.value = true;
+                imgOpp.src = imgOpp.src.replace('or_S_sel', 'or_S');
+                ch_sud.value = false;
+            }
+        }
+
+        if (orient == 'S') {
+            var img = document.getElementById('img_or_S');
+            var imgOpp = document.getElementById('img_or_N');
+            if (img.src.includes('sel')) {
+                img.src = img.src.replace('or_S_sel', 'or_S');
+                ch_sud.value = false;
+            }
+            else {
+                img.src = img.src.replace('or_S', 'or_S_sel');
+                ch_sud.value = true;
+                imgOpp.src = imgOpp.src.replace('or_N_sel', 'or_N');
+                ch_nord.value = false;
+            }
+        }
+
+        if (orient == 'E') {
+            var img = document.getElementById('img_or_E');
+            var imgOpp = document.getElementById('img_or_W');
+            if (img.src.includes('sel')) {
+                img.src = img.src.replace('or_E_sel', 'or_E');
+                ch_est.value = false;
+            }
+            else {
+                img.src = img.src.replace('or_E', 'or_E_sel');
+                ch_est.value = true;
+                imgOpp.src = imgOpp.src.replace('or_W_sel', 'or_W');
+                ch_ouest.value = false;
+            }
+        }
+
+        if (orient == 'W') {
+            var img = document.getElementById('img_or_W');
+            var imgOpp = document.getElementById('img_or_E');
+            if (img.src.includes('sel')) {
+                img.src = img.src.replace('or_W_sel', 'or_W');
+                ch_ouest.value = false;
+            }
+            else {
+                img.src = img.src.replace('or_W', 'or_W_sel');
+                ch_ouest.value = true;
+                imgOpp.src = imgOpp.src.replace('or_E_sel', 'or_E');
+                ch_est.value = false;
+            }
+        }
+
+    }
+
+
+
+
 </script>
 
 
@@ -61,7 +175,10 @@
 
 @using (Html.BeginForm("MonAppartement", "Appartement", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-
+    @Html.HiddenFor(m => m.IsNord)
+    @Html.HiddenFor(m => m.IsSud)
+    @Html.HiddenFor(m => m.IsEst)
+    @Html.HiddenFor(m => m.IsOuest)
 
     <!--INFORMATIONS DE L'APPARTEMENT-->
     <h4 class="col-sm-12 titre-bloc">Informations de l'appartement</h4>
@@ -239,28 +356,48 @@
 
             <!--Orientation-->
             <div class="col-sm-6 form-group">
-                <span>Orientation (@Model.OrientationNS @Model.OrientationEO):</span>
+                <span>Orientation :</span>
                 <div class="valeur">
-                    <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_sud-1">
-                        <input type="radio" id="ch_or_sud-1" class="mdl-radio__button" name="ch_or_ns" value="1" onclick="majOrientNS('Sud');">
-                        <span class="mdl-radio__label normaltext">Sud</span>
-                    </label>
-                    <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_nord-2">
-                        <input type="radio" id="ch_or_nord-2" class="mdl-radio__button" name="ch_or_ns" value="2" onclick="majOrientNS('Nord ');">
-                        <span class="mdl-radio__label normaltext">Nord</span>
-                    </label>
-                    <br />
-                    <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_est-1">
-                        <input type="radio" id="ch_or_est-1" class="mdl-radio__button" name="ch_or_eo" value="1" onclick="majOrientEO('Est');">
-                        <span class="mdl-radio__label normaltext">Est </span>
-                    </label>
-                    <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_ouest-2">
-                        <input type="radio" id="ch_or_ouest-2" class="mdl-radio__button" name="ch_or_eo" value="2" onclick="majOrientEO('Ouest');">
-                        <span class="mdl-radio__label normaltext">Ouest</span>
-                    </label>
+                    @if (Model.IsNord)
+                    {
+                        <img id="img_or_N" src='@Url.Content("~/Content/Icones/")or_N_sel.png' onclick="changeOrient('N');" />
+                    }
+                    else
+                    {
+                        <img id="img_or_N" src='@Url.Content("~/Content/Icones/")or_N.png' onclick="changeOrient('N');" />
+                    }
+
+                    @if (Model.IsSud)
+                    {
+                        <img id="img_or_S" src='@Url.Content("~/Content/Icones/")or_S_sel.png' onclick="changeOrient('S');" />
+                    }
+                    else
+                    {
+                        <img id="img_or_S" src='@Url.Content("~/Content/Icones/")or_S.png' onclick="changeOrient('S');" />
+                    }
+
+                    @if (Model.IsEst)
+                    {
+                        <img id="img_or_E" src='@Url.Content("~/Content/Icones/")or_E_sel.png' onclick="changeOrient('E');" />
+                    }
+                    else
+                    {
+                        <img id="img_or_E" src='@Url.Content("~/Content/Icones/")or_E.png' onclick="changeOrient('E');" />
+                    }
+
+
+
+                    @if (Model.IsOuest)
+                    {
+                        <img id="img_or_W" src='@Url.Content("~/Content/Icones/")or_W_sel.png' onclick="changeOrient('W');" />
+                    }
+                    else
+                    {
+                        <img id="img_or_W" src='@Url.Content("~/Content/Icones/")or_W.png' onclick="changeOrient('W');" />
+                    }
+
                 </div>
-                @Html.TextBoxFor(m => m.OrientationNS, new { @class = "hidden", @id = "ch_orientNS" })
-                @Html.TextBoxFor(m => m.OrientationEO, new { @class = "hidden", @id = "ch_orientEO" })
+
             </div>
 
             <!--Message-->
@@ -305,16 +442,16 @@
 
             <!--Double vitrage-->
             <div class="col-sm-1 form-group">
-                <img src='@Url.Content("~/Content/Icones/")trav_doubleVitrage.png'/>
+                <img src='@Url.Content("~/Content/Icones/")trav_doubleVitrage.png' />
             </div>
-            
+
             <div class="col-sm-3 form-group">
-                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_vitre">
-                    @Html.CheckBoxFor(m => m.IsDoubleVitrage, new { @id = "ch_vitre", @class = "mdl-checkbox__input" })
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_vitrage">
+                    @Html.CheckBoxFor(m => m.IsDoubleVitrage, new { @id = "ch_vitrage", @class = "mdl-checkbox__input", @onClick = "updateTravaux('vitrage');" })
                     <span class="mdl-checkbox__label normaltext">Double vitrage</span>
                 </label>
             </div>
-       
+
             <div class="col-sm-1 form-group">
                 @Html.TextBoxFor(m => m.InfosVitrage.Prix, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_prix" })
             </div>
@@ -330,99 +467,99 @@
 
             <!--Isolation-->
             <div class="col-sm-1 form-group">
-                <img src='@Url.Content("~/Content/Icones/")trav_isolationTotale.png'/>
+                <img src='@Url.Content("~/Content/Icones/")trav_isolationTotale.png' />
             </div>
             <div class="col-sm-3 form-group">
-                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_valves">
-                    @Html.CheckBoxFor(m => m.IsIsolationTotale, new { @id = "ch_valves", @class = "mdl-checkbox__input" })
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_isoAll">
+                    @Html.CheckBoxFor(m => m.IsIsolationTotale, new { @id = "ch_isoAll", @class = "mdl-checkbox__input", @onClick = "updateTravaux('isoAll');" })
                     <span class="mdl-checkbox__label normaltext">Isolation intérieure totale</span>
                 </label>
             </div>
 
             <div class="col-sm-1 form-group">
-                @Html.TextBoxFor(m => m.InfosIsolationTotale.Prix, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_prix" })
+                @Html.TextBoxFor(m => m.InfosIsolationTotale.Prix, new { @class = "mdl-textfield__input", @id = "ch_tr_isoAll_prix" })
             </div>
 
             <div class="col-sm-4 form-group">
-                @Html.TextBoxFor(m => m.InfosIsolationTotale.Entreprise, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_Entreprise" })
+                @Html.TextBoxFor(m => m.InfosIsolationTotale.Entreprise, new { @class = "mdl-textfield__input", @id = "ch_tr_isoAll_Entreprise" })
             </div>
 
             <div class="col-sm-3 form-group">
-                @Html.TextBoxFor(m => m.InfosIsolationTotale.Contact, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_Contact" })
+                @Html.TextBoxFor(m => m.InfosIsolationTotale.Contact, new { @class = "mdl-textfield__input", @id = "ch_tr_isoAll_Contact" })
             </div>
 
             <!--Isolation partielle-->
             <div class="col-sm-1 form-group">
-                <img src='@Url.Content("~/Content/Icones/")trav_isolationSmall.png'/>
+                <img src='@Url.Content("~/Content/Icones/")trav_isolationSmall.png' />
             </div>
             <div class="col-sm-3 form-group">
-                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_valves">
-                    @Html.CheckBoxFor(m => m.IsIsolationPartielle, new { @id = "ch_valves", @class = "mdl-checkbox__input" })
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_isoSmall">
+                    @Html.CheckBoxFor(m => m.IsIsolationPartielle, new { @id = "ch_isoSmall", @class = "mdl-checkbox__input", @onClick = "updateTravaux('isoSmall');" })
                     <span class="mdl-checkbox__label normaltext">Isolation intérieure partielle</span>
                 </label>
             </div>
 
             <div class="col-sm-1 form-group">
-                @Html.TextBoxFor(m => m.InfosIsolationPartielle.Prix, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_prix" })
+                @Html.TextBoxFor(m => m.InfosIsolationPartielle.Prix, new { @class = "mdl-textfield__input", @id = "ch_tr_isoSmall_prix" })
             </div>
 
             <div class="col-sm-4 form-group">
-                @Html.TextBoxFor(m => m.InfosIsolationPartielle.Entreprise, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_Entreprise" })
+                @Html.TextBoxFor(m => m.InfosIsolationPartielle.Entreprise, new { @class = "mdl-textfield__input", @id = "ch_tr_isoSmall_Entreprise" })
             </div>
 
             <div class="col-sm-3 form-group">
-                @Html.TextBoxFor(m => m.InfosIsolationPartielle.Contact, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_Contact" })
+                @Html.TextBoxFor(m => m.InfosIsolationPartielle.Contact, new { @class = "mdl-textfield__input", @id = "ch_tr_isoSmall_Contact" })
             </div>
 
 
             <!--Robinets-->
             <div class="col-sm-1 form-group">
-                <img src='@Url.Content("~/Content/Icones/")trav_thermostatiques.png'/>
+                <img src='@Url.Content("~/Content/Icones/")trav_thermostatiques.png' />
             </div>
             <div class="col-sm-3 form-group">
-                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_valves">
-                    @Html.CheckBoxFor(m => m.IsRobinetsThermo, new { @id = "ch_valves", @class = "mdl-checkbox__input" })
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_robinets">
+                    @Html.CheckBoxFor(m => m.IsRobinetsThermo, new { @id = "ch_robinets", @class = "mdl-checkbox__input", @onClick = "updateTravaux('robinets');" })
                     <span class="mdl-checkbox__label normaltext">Robinets Thermostatiques</span>
                 </label>
             </div>
 
             <div class="col-sm-1 form-group">
-                @Html.TextBoxFor(m => m.InfosRobinets.Prix, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_prix" })
+                @Html.TextBoxFor(m => m.InfosRobinets.Prix, new { @class = "mdl-textfield__input", @id = "ch_tr_robinets_prix" })
             </div>
 
             <div class="col-sm-4 form-group">
-                @Html.TextBoxFor(m => m.InfosRobinets.Entreprise, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_Entreprise" })
+                @Html.TextBoxFor(m => m.InfosRobinets.Entreprise, new { @class = "mdl-textfield__input", @id = "ch_tr_robinets_Entreprise" })
             </div>
 
             <div class="col-sm-3 form-group">
-                @Html.TextBoxFor(m => m.InfosRobinets.Contact, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_Contact" })
+                @Html.TextBoxFor(m => m.InfosRobinets.Contact, new { @class = "mdl-textfield__input", @id = "ch_tr_robinets_Contact" })
             </div>
 
 
             <!--Valves-->
             <div class="col-sm-1 form-group">
-                <img src='@Url.Content("~/Content/Icones/")trav_valvesAuto.png'/>
+                <img src='@Url.Content("~/Content/Icones/")trav_valvesAuto.png' />
             </div>
             <div class="col-sm-3 form-group">
                 <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_valves">
-                    @Html.CheckBoxFor(m => m.IsValvesAuto, new { @id = "ch_valves", @class = "mdl-checkbox__input" })
+                    @Html.CheckBoxFor(m => m.IsValvesAuto, new { @id = "ch_valves", @class = "mdl-checkbox__input", @onClick = "updateTravaux('valves');" })
                     <span class="mdl-checkbox__label normaltext">Valves automatiques</span>
                 </label>
             </div>
 
             <div class="col-sm-1 form-group">
-                @Html.TextBoxFor(m => m.InfosValves.Prix, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_prix" })
+                @Html.TextBoxFor(m => m.InfosValves.Prix, new { @class = "mdl-textfield__input", @id = "ch_tr_valves_prix" })
             </div>
 
             <div class="col-sm-4 form-group">
-                @Html.TextBoxFor(m => m.InfosValves.Entreprise, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_Entreprise" })
+                @Html.TextBoxFor(m => m.InfosValves.Entreprise, new { @class = "mdl-textfield__input", @id = "ch_tr_valves_Entreprise" })
             </div>
 
             <div class="col-sm-3 form-group">
-                @Html.TextBoxFor(m => m.InfosValves.Contact, new { @class = "mdl-textfield__input", @id = "ch_tr_vitrage_Contact" })
+                @Html.TextBoxFor(m => m.InfosValves.Contact, new { @class = "mdl-textfield__input", @id = "ch_tr_valves_Contact" })
             </div>
 
-            
+
 
         </div>
     </div><br /><br />
@@ -435,21 +572,36 @@
     <div class="sous-partie">
         <div class="row">
 
+            <div class="col-sm-12 form-group">
+                <p>
+                    L'application utilise automatiquement vos données afin de calculer les moyennes affichées sur la page "Vue générale".
+                    Vos données sont donc utilisées mais non nominativement et elles sont donc noyées dans le flot général des données.
+                </p>
+            </div>
             <!--consommation-->
             <div class="col-sm-12 form-group">
                 <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_partager">
                     @Html.CheckBoxFor(m => m.Partager, new { @id = "ch_partager", @class = "mdl-checkbox__input" })
-                    <span class="mdl-checkbox__label normaltext">Autoriser le partage des données de consommation détaillés de mon appartement</span>
+                    <span class="mdl-checkbox__label normaltext">Autoriser le partage de mes consommations de chauffage</span>
                 </label>
+                <p>
+                    Permet de partager de maniére détaillé la consommation de chauffage de votre appartement.
+                    Les autres utilisateurs pourront visualiser l'equivalent de vos graphiques présents dans la page
+                    "Ma consommation". Le partage de ces informations permet de visualiser celles des autres appartements qui font aussi ce partage.
+                </p>
             </div>
 
 
             <!--consommation-->
             <div class="col-sm-12 form-group">
-                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_partager">
-                    @Html.CheckBoxFor(m => m.Partager, new { @id = "ch_partager", @class = "mdl-checkbox__input" })
-                    <span class="mdl-checkbox__label normaltext">Autoriser le partage du prix des travaux réalisés</span>
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_partagerTr">
+                    @Html.CheckBoxFor(m => m.PartagerTravaux, new { @id = "ch_partagerTr", @class = "mdl-checkbox__input" })
+                    <span class="mdl-checkbox__label normaltext">Autoriser le partage du prix de mes travaux</span>
                 </label>
+                <p>
+                    Si vous avez renseigné le tableau des travaux, l'entreprise et son contact seront automatiquement partagées.
+                    Vous pouvez néanmoins refuser de partager le prix de ces travaux.
+                </p>
             </div>
 
         </div>

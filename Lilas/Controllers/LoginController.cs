@@ -13,7 +13,7 @@ namespace Lilas.Controllers
     public class LoginController : Controller
     {
         Bdd_Appartement bdd_appartement;
-
+        Bdd_Travaux bdd_travaux;
 
         // GET: Login
         [AllowAnonymous]
@@ -40,6 +40,7 @@ namespace Lilas.Controllers
         public ActionResult Index(LoginViewModel vm)
         {
             bdd_appartement = new Bdd_Appartement();
+            bdd_travaux = new Bdd_Travaux();
             Appartement appt = new Appartement();
             appt.AppartementName = vm.Appart;
             appt.UserName = vm.Utilisateur;
@@ -64,20 +65,25 @@ namespace Lilas.Controllers
 
 
 
-        public void CreerCompteAjax(string paramUserName, string paramAppartement, string paramBatiment, string paramEscalier, int paramEtage, string paramPorte, string paramType, bool paramIsDoubleVitrage, bool paramIsRobinetsThermo, string paramOrientation)
+        public void CreerCompteAjax(string paramUserName, string paramAppartement, string paramBatiment, string paramEscalier, int paramEtage, string paramPorte, string paramType, string paramOrientation)
         {
             try
             {
                 bdd_appartement = new Bdd_Appartement();
-
+                bdd_travaux = new Bdd_Travaux();
 
                 Appartement appt = new Appartement();
                 appt.AppartementName = paramAppartement;
                 appt.Batiment = paramBatiment;
                 appt.Escalier = paramEscalier;
                 appt.Etage = paramEtage;
-                appt.IsDoubleVitrage = paramIsDoubleVitrage;
-                appt.IsRobinetsThermo = paramIsRobinetsThermo;
+                appt.IsDoubleVitrage = false;
+                appt.IsRobinetsThermo = false;
+                appt.IsIsolationPartielle = false;
+                appt.IsIsolationTotale = false;
+                appt.IsValvesAuto = false;
+                appt.Partager = true;
+                appt.PartagerTravaux = false;
                 appt.Orientation = paramOrientation;
                 appt.Porte = paramPorte;
                 appt.Type = paramType;
@@ -85,8 +91,15 @@ namespace Lilas.Controllers
 
                 if(!bdd_appartement.IsAppartementNamePresent(paramAppartement))
                 {
-                    bdd_appartement.Add_Appartement(appt);
-                    TempData["message"] = "Compte créé";
+                    bool result = bdd_appartement.Add_Appartement(appt);
+                    appt = bdd_appartement.Get_AppartementFromName(paramAppartement);
+
+                    result = result && bdd_travaux.Add_AllTravaux(appt.AppartementId, appt.Type);
+
+                    if(result)
+                        TempData["message"] = "Compte créé";
+                    else
+                        TempData["message"] = "Echec lors de la création du compte";
                 }
                 else
                 {

@@ -16,7 +16,10 @@
         document.getElementById('block_Infos2').style.display = 'none';
         document.getElementById('block_ConsoCourante1').style.display = 'none';
         document.getElementById('block_ConsoCourante2').style.display = 'none';
-        
+        document.getElementById('block_TRtravaux').style.display = 'none';
+        document.getElementById('block_travaux').style.display = 'none';
+
+
 
     });
 
@@ -24,34 +27,41 @@
 
     function AfficherInfosAppt(val) {
 
-        document.getElementById('block_Conso1').style.display = 'block';
-        document.getElementById('block_Conso2').style.display = 'block';
+        var Partage = '@Model.JePartage'
+
+
         document.getElementById('block_Infos1').style.display = 'block';
         document.getElementById('block_Infos2').style.display = 'block';
-        document.getElementById('block_ConsoCourante1').style.display = 'block';
-        document.getElementById('block_ConsoCourante2').style.display = 'block';
+        document.getElementById('block_TRtravaux').style.display = 'block';
+        document.getElementById('block_travaux').style.display = 'block';
 
-
-        RefreshTableauConsoChauffage(val);
-        RefreshTableauConsoChauffageAnnee(val);
         RefreshInformationsAppartement(val);
+        RefreshTableauTravaux(val);
+
+        if (Partage=='True') {
+            document.getElementById('block_ConsoCourante1').style.display = 'block';
+            document.getElementById('block_ConsoCourante2').style.display = 'block';
+            document.getElementById('block_Conso1').style.display = 'block';
+            document.getElementById('block_Conso2').style.display = 'block';
+
+            RefreshTableauConsoChauffage(val);
+            RefreshTableauConsoChauffageAnnee(val);
+        }
+
     }
 
 
 
     function RefreshInformationsAppartement(apptId) {
         var baseUrl = '@Url.Content("~/Appartement/GetInformationsAppartement/")';
+        var imgUrl = '@Url.Content("~/Content/Icones/")';
         var Type = "";
-        var IsDoubleVitrage = false;
-        var IsRobinetsThermo = false;
         var Orientation = "";
 
             $.getJSON(baseUrl, {paramApptId: apptId }, function (result) {
                 $.each(result, function (index, itemData) {
 
                     Type = itemData.Type;
-                    IsDoubleVitrage = itemData.IsDoubleVitrage;
-                    IsRobinetsThermo = itemData.IsRobinetsThermo;
                     Orientation = itemData.Orientation;
 
                     if (Type = "T2") {
@@ -72,44 +82,38 @@
                         document.getElementById('typeT4').style.display = 'block';
                     }
 
-                    if (IsDoubleVitrage) {
-                        document.getElementById('dv_vitre').style.display = 'none';
-                        document.getElementById('dv_vitreOK').style.display = 'block';
-                    }
-                    else {
-                        document.getElementById('dv_vitre').style.display = 'block';
-                        document.getElementById('dv_vitreOK').style.display = 'none';
-                    }
+                    document.getElementById('img_orientation').src = imgUrl + Orientation + ".png";
 
-                    if (IsRobinetsThermo) {
-                        document.getElementById('dv_valves').style.display = 'none';
-                        document.getElementById('dv_valvesOK').style.display = 'block';
-                    }
-                    else {
-                        document.getElementById('dv_valves').style.display = 'block';
-                        document.getElementById('dv_valvesOK').style.display = 'none';
-                    }
 
-                    document.getElementById('orientNord').style.display = 'none';
-                    document.getElementById('orientSud').style.display = 'none';
-                    document.getElementById('orientEst').style.display = 'none';
-                    document.getElementById('orientOuest').style.display = 'none';
+                });
 
-                    if (Orientation.includes("Nord")) {
-                        document.getElementById('orientNord').style.display = 'block';
-                    }
+        });
 
-                    if (Orientation.includes("Sud")) {
-                        document.getElementById('orientSud').style.display = 'block';
-                    }
+    };
 
-                    if (Orientation.includes("Est")) {
-                        document.getElementById('orientEst').style.display = 'block';
-                    }
 
-                    if (Orientation.includes("Ouets")) {
-                        document.getElementById('orientOuest').style.display = 'block';
-                    }
+     function RefreshTableauTravaux(apptId) {
+        var baseUrl = '@Url.Content("~/Appartement/GetInformationsTravaux/")';
+        var imgUrl = '@Url.Content("~/Content/Icones/")';
+        $('#tab_travaux > tbody').empty();
+
+            $.getJSON(baseUrl, {paramApptId: apptId }, function (result) {
+                $.each(result, function (index, itemData) {
+                    var Img = itemData.imgName;
+                    var Nom = itemData.nom;
+                    var Prix = itemData.prix;
+                    var Entreprise = itemData.Entreprise;
+                    var Contact = itemData.Contact;
+
+                    var row = "<tr>";
+                    row += "<td><img src='" + imgUrl + Img+ ".png' /></td>";
+                    row += "<td>" + Nom + "</td>";
+                    row += "<td>" + Prix + " €</td>";
+                    row += "<td>" + Entreprise + "</td>";
+                    row += "<td>" + Contact + "</td>";
+                    row += "</tr";
+
+                    $('#tab_travaux > tbody').append(row);
 
                 });
 
@@ -308,53 +312,22 @@
                     @if (Model.list_appts[nb_appt].Partager)
                     {
                         <td>Oui</td>
-                        if (Model.JePartage)
-                        {
-                        <td><img src='@Url.Content("~/Content/Icones/")ic_graph_orange.png' onclick='AfficherInfosAppt(@Model.list_appts[nb_appt].AppartementId)' /></td>
-
-                        }
-                        else
-                        {
-                            <td></td>
-                        }
                     }
                     else
                     {
                         <td><span class="texteRouge">Non</span></td>
-                        <td></td>
                     }
+                    <td><img src='@Url.Content("~/Content/Icones/")ic_graph_orange.png' onclick='AfficherInfosAppt(@Model.list_appts[nb_appt].AppartementId)' /></td>
 
                 </tr>
             }
         </table>
     </div>
+
+
+
+
     <div class="col-sm-9">
-
-        @*<h4 class="col-sm-12 titre-bloc">Général</h4>
-        <div class="sous-partie">
-            <div class="row">
-                <div class="col-sm-6 form-group">
-                    <span>Appartements :</span>
-                    <div class="valeur">
-                        <span>@Model.nbAppts / @Model.nbApptsTotal</span>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 form-group">
-                    <span>Partage :</span>
-                    <div class="valeur">
-                        <span>@Model.nbPartage / @Model.nbAppts</span>
-                    </div>
-                </div>
-            </div>
-        </div><br />*@
-
-        @if (!Model.JePartage)
-    {
-        <div class="message message-info">
-            <span>Pour pouvoir visualiser les informations partagées par les autres utilisateurs, vous devez accepter de partager les inforations relatives à votre apportement.</span><br />
-        </div>
-}
 
 
         <h4 id="block_Infos1" class="col-sm-12 titre-bloc">Informations</h4>
@@ -387,64 +360,63 @@
                 <div class="col-sm-6 form-group">
                     <span>Orientation :</span>
                     <div class="valeur">
-                        <label id="orientSud" class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_sud-1">
-                            <input type="radio" id="ch_or_sud-1" class="mdl-radio__button" checked>
-                            <span class="mdl-radio__label normaltext">Sud</span>
-                        </label>
-                        <label id="orientNord" class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_nord-2">
-                            <input type="radio" id="ch_or_nord-2" class="mdl-radio__button" checked>
-                            <span class="mdl-radio__label normaltext">Nord</span>
-                        </label>
-                        <label id="orientEst" class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_est-1">
-                            <input type="radio" id="ch_or_est-1" class="mdl-radio__button" checked>
-                            <span class="mdl-radio__label normaltext">Est </span>
-                        </label>
-                        <label id="orientOuest" class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ch_or_ouest-2">
-                            <input type="radio" id="ch_or_ouest-2" class="mdl-radio__button" checked>
-                            <span class="mdl-radio__label normaltext">Ouest</span>
-                        </label>
+                        <img id="img_orientation" src=""/>
                     </div>
                 </div>
 
-                <!--Double vitrage-->
-                <div id="dv_vitre" class="col-sm-12">
-                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_vitre">
-                        <input type="checkbox" id="ch_vitre" class="mdl-checkbox__input">
-                        <span class="mdl-checkbox__label normaltext">Double vitrage</span>
-                    </label>
-                </div>
-                <div id="dv_vitreOK" class="col-sm-12">
-                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_vitreOK">
-                        <input type="checkbox" id="ch_vitreOK" class="mdl-checkbox__input" checked>
-                        <span class="mdl-checkbox__label normaltext">Double vitrage</span>
-                    </label>
-                </div>
+                
 
-                <!--Robinets-->
-                <div id="dv_valves" class="col-sm-12">
-                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_valves">
-                        <input type="checkbox" id="ch_valves" class="mdl-checkbox__input">
-                        <span class="mdl-checkbox__label normaltext">Robinets Thermostatiques / Valves automatiques</span>
-                    </label>
-                </div>
-                <div id="dv_valvesOK" class="col-sm-12">
-                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_valvesOK">
-                        <input type="checkbox" id="ch_valvesOK" class="mdl-checkbox__input" checked>
-                        <span class="mdl-checkbox__label normaltext">Robinets Thermostatiques / Valves automatiques</span>
-                    </label>
-                </div>
+               
 
 
             </div>
         </div><br />
 
 
+        <!--TRAVAUX REALISES-->
+        <h4 id="block_TRtravaux" class="col-sm-12 titre-bloc">Travaux réalisés</h4>
+        <div id="block_travaux" class="sous-partie">
+
+            <div class="row">
+
+                <center>
+                 <table id="tab_travaux" class="mdl-data-table mdl-js-data-table">
+                     <thead>
+                         <tr>
+                             <td colspan="2"><strong>Type</strong></td>
+                             <td><strong>Prix</strong></td>
+                             <td><strong>Entreprise / Artisan</strong></td>
+                             <td><strong>Contact</strong></td>
+                         </tr>
+                     </thead>
+                    <tbody></tbody>
+                </table>
+                    </center>
+
+
+
+
+
+            </div>
+        </div><br />
+
+
+        @if (!Model.JePartage)
+        {
+            <div class="message message-info">
+                <span>Pour pouvoir visualiser les informations partagées par les autres utilisateurs, vous devez accepter de partager les inforations relatives à votre apportement.</span><br />
+            </div>
+        }
+
+         <!--CONSOMMATION COURANTE-->
         <h4 id="block_ConsoCourante1" class="col-sm-12 titre-bloc">Consommation courante</h4>
         <div id="block_ConsoCourante2" class="sous-partie">
             <canvas id="ch_ConsoChauffageAnnee" width="300" height="100"></canvas>
             <br />
         </div><br />
 
+
+         <!--CONSOMMATION ANNUELLE-->
         <h4 id="block_Conso1" class="col-sm-12 titre-bloc">Consommation annuelle</h4>
         <div id="block_Conso2" class="sous-partie">
             <canvas id="ch_ConsoChauffage" width="300" height="100"></canvas>

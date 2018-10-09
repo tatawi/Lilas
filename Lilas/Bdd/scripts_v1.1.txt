@@ -1,7 +1,8 @@
   alter table Appartement
   add IsIsolationPartielle bit,
   IsIsolationTotale bit,
-  IsValvesAuto bit
+  IsValvesAuto bit,
+  PartagerTravaux bit
   
   
     Create table Travaux 
@@ -18,3 +19,10 @@
   set IsIsolationPartielle =0,
   IsIsolationTotale=0,
   IsValvesAuto=0
+  
+      insert into Travaux
+  values('DoubleVitrage',1,0,'','','T4'),
+  ('IsolationTotale',1,0,'','','T4'),
+  ('IsolationPartielle',1,0,'','','T4'),
+    ('Robinets',1,0,'','','T4'),
+	  ('Valves',1,0,'','','T4')

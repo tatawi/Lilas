@@ -52,6 +52,21 @@ namespace Lilas.Bdd
         //------------------------------------------------------------------------------------------------------------
         // INSERT 
         //------------------------------------------------------------------------------------------------------------
+
+        public bool Add_AllTravaux(int apptId, string apptType)
+        {
+            bool result = true;
+
+            result = result && this.Add_Travail(new Travail(apptId, EnumTravail.DoubleVitrage, apptType));
+            result = result && this.Add_Travail(new Travail(apptId, EnumTravail.IsolationPartielle, apptType));
+            result = result && this.Add_Travail(new Travail(apptId, EnumTravail.IsolationTotale, apptType));
+            result = result && this.Add_Travail(new Travail(apptId, EnumTravail.Robinets, apptType));
+            result = result && this.Add_Travail(new Travail(apptId, EnumTravail.Valves, apptType));
+
+            return result;
+        }
+
+
         public bool Add_Travail(Travail tr)
         {
             try
@@ -63,10 +78,10 @@ namespace Lilas.Bdd
 
                     SqlCommand cmd = new SqlCommand(sql, conn);
                     cmd.Parameters.Add("@type", SqlDbType.VarChar).Value = tr.type;
-                    cmd.Parameters.Add("@AppartementId", SqlDbType.VarChar).Value = tr.AppartementId;
-                    cmd.Parameters.Add("@Prix", SqlDbType.VarChar).Value = tr.Prix;
+                    cmd.Parameters.Add("@AppartementId", SqlDbType.Int).Value = tr.AppartementId;
+                    cmd.Parameters.Add("@Prix", SqlDbType.Int).Value = tr.Prix;
                     cmd.Parameters.Add("@Entreprise", SqlDbType.VarChar).Value = tr.Entreprise;
-                    cmd.Parameters.Add("@Contact", SqlDbType.Int).Value = tr.Contact;
+                    cmd.Parameters.Add("@Contact", SqlDbType.VarChar).Value = tr.Contact;
                     cmd.Parameters.Add("@TypeAppartement", SqlDbType.VarChar).Value = tr.TypeAppartement;
                     
                     cmd.CommandType = CommandType.Text;
@@ -89,6 +104,38 @@ namespace Lilas.Bdd
         // UPDATE 
         //------------------------------------------------------------------------------------------------------------
 
+        public bool Update_Travail(Travail tr)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(this.connectionString))
+                {
+                    conn.Open();
+                    string sql = "UPDATE Travaux SET type=@paramtype, Prix=@paramPrix, Entreprise=@paramEntreprise, Contact=@paramContact, TypeAppartement=@paramTypeAppartement WHERE TravailId=@paramTravailId";
+
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.Add("@paramTravailId", SqlDbType.VarChar).Value = tr.TravailId;
+                    cmd.Parameters.Add("@paramtype", SqlDbType.VarChar).Value = tr.type;
+                    //cmd.Parameters.Add("@paramAppartementId", SqlDbType.VarChar).Value = tr.AppartementId;
+                    cmd.Parameters.Add("@paramPrix", SqlDbType.Int).Value = tr.Prix;
+                    cmd.Parameters.Add("@paramEntreprise", SqlDbType.VarChar).Value = tr.Entreprise??"";
+                    cmd.Parameters.Add("@paramContact", SqlDbType.VarChar).Value = tr.Contact??"";
+                    cmd.Parameters.Add("@paramTypeAppartement", SqlDbType.VarChar).Value = tr.TypeAppartement;
+
+
+                    cmd.CommandType = CommandType.Text;
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
 
     }
 }

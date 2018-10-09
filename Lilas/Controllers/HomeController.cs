@@ -1,4 +1,5 @@
 ﻿using Lilas.Bdd;
+using Lilas.Models;
 using Lilas.Objets;
 using System;
 using System.Collections.Generic;
@@ -14,12 +15,14 @@ namespace Lilas.Controllers
 
         Bdd_Appartement bdd_appartement;
         Bdd_Consommation bdd_conso;
+        Bdd_Travaux bdd_travaux;
 
 
         public HomeController()
         {
             this.bdd_appartement = new Bdd_Appartement();
             this.bdd_conso = new Bdd_Consommation();
+            this.bdd_travaux = new Bdd_Travaux();
         }
 
 
@@ -42,11 +45,62 @@ namespace Lilas.Controllers
         #region Vue Générale
         public ActionResult Index()
         {
+            VueGeneralViewModel vm = new VueGeneralViewModel();
             Appartement user = bdd_appartement.Get_AppartementFromName(User.Identity.Name);
-            ViewBag.ApptId = user.AppartementId;
-            ViewBag.Type = user.Type;
+            vm.AppartementId = user.AppartementId;
+            vm.Type = user.Type;
 
-            return View();
+            vm.IsDonneesAjour = bdd_conso.IsConsoAjour(user.AppartementId);
+            if(vm.IsDonneesAjour)
+            {
+                Consommation minConsoForYear = bdd_conso.Get_MinConsoForType(vm.Type);
+                
+                if (minConsoForYear != null)
+                {
+                    vm.IsMeilleurDansCategorie = vm.AppartementId == minConsoForYear.AppartementId;
+
+                    if (!vm.IsMeilleurDansCategorie)
+                    {
+                        Appartement bestAppt = bdd_appartement.Get_AppartementFromId(minConsoForYear.AppartementId);
+                        bestAppt.listeTravaux = bdd_travaux.Get_TravauxAppt(bestAppt.AppartementId);
+                        user.listeTravaux = bdd_travaux.Get_TravauxAppt(user.AppartementId);
+                        Consommation MaConso = bdd_conso.get_ConsommationForYearAndAppt(DateTime.Now.Year, vm.AppartementId);
+                        int totalConsoUser = MaConso.Cuisine + MaConso.Salon + MaConso.Chambre_Salon + MaConso.Chambre1 + MaConso.Chambre2 + MaConso.Chambre3 + MaConso.Sdb;
+
+
+                        
+
+                        if (bestAppt.IsDoubleVitrage && !user.IsDoubleVitrage)
+                            vm.listeTravauxAfaire.Add(bestAppt.listeTravaux.FirstOrDefault(tr => tr.type == EnumTravail.DoubleVitrage));
+
+                        if (bestAppt.IsIsolationPartielle && !user.IsIsolationPartielle)
+                            vm.listeTravauxAfaire.Add(bestAppt.listeTravaux.FirstOrDefault(tr => tr.type == EnumTravail.IsolationPartielle));
+
+
+                        if (bestAppt.IsIsolationTotale && !user.IsIsolationTotale)
+                            vm.listeTravauxAfaire.Add(bestAppt.listeTravaux.FirstOrDefault(tr => tr.type == EnumTravail.IsolationTotale));
+
+
+                        if (bestAppt.IsRobinetsThermo && !user.IsRobinetsThermo)
+                            vm.listeTravauxAfaire.Add(bestAppt.listeTravaux.FirstOrDefault(tr => tr.type == EnumTravail.Robinets));
+
+
+                        if (bestAppt.IsValvesAuto && !user.IsValvesAuto)
+                            vm.listeTravauxAfaire.Add(bestAppt.listeTravaux.FirstOrDefault(tr => tr.type == EnumTravail.Valves));
+
+
+                        vm.pctEconomiesChauffage = (((totalConsoUser * 100 / minConsoForYear.Salon)) - 100) + " %";
+                        vm.MontantAEngagerPour = vm.listeTravauxAfaire.Sum(t=>t.Prix);
+
+                    }
+                }
+            }
+
+            
+
+
+
+            return View(vm);
         }
 
         //GET - consommations par piéces moyennes pour l'année
@@ -384,25 +438,6 @@ namespace Lilas.Controllers
         }
 
 
-        //private Consommation majConso(Consommation toUpdate, Consommation forUpdate)
-        //{
-        //    if (toUpdate.AppartementId == 0)
-        //    {
-        //        toUpdate = forUpdate.ShallowCopy();
-        //    }
-        //    else
-        //    {
-        //        toUpdate.Cuisine = (toUpdate.Cuisine + forUpdate.Cuisine) / 2;
-        //        toUpdate.Salon = (toUpdate.Salon + forUpdate.Salon) / 2;
-        //        toUpdate.Chambre_Salon = (toUpdate.Chambre_Salon + forUpdate.Chambre_Salon) / 2;
-        //        toUpdate.Chambre1 = (toUpdate.Chambre1 + forUpdate.Chambre1) / 2;
-        //        toUpdate.Chambre2 = (toUpdate.Chambre2 + forUpdate.Chambre2) / 2;
-        //        toUpdate.Chambre3 = (toUpdate.Chambre3 + forUpdate.Chambre3) / 2;
-        //        toUpdate.Sdb = (toUpdate.Sdb + forUpdate.Sdb) / 2;
-        //    }
-
-        //    return toUpdate;
-        //}
         #endregion
 
 

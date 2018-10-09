@@ -31,6 +31,7 @@ namespace Lilas.Models
             this.IsIsolationTotale = appt.IsIsolationTotale;
             this.IsValvesAuto = appt.IsValvesAuto;
             this.Partager = appt.Partager;
+            this.PartagerTravaux = appt.PartagerTravaux;
 
             this.InfosVitrage = new Travail();
             this.InfosIsolationPartielle = new Travail();
@@ -39,10 +40,10 @@ namespace Lilas.Models
             this.InfosValves = new Travail();
 
 
-            if (appt.Orientation.Contains("Nord")) this.OrientationNS = "Nord";
-            if (appt.Orientation.Contains("Sud")) this.OrientationNS = "Sud";
-            if (appt.Orientation.Contains("Est")) this.OrientationEO = "Est";
-            if (appt.Orientation.Contains("Ouest")) this.OrientationEO = "Ouest";
+            if (appt.Orientation.Contains("Nord")) this.IsNord = true;
+            if (appt.Orientation.Contains("Sud")) this.IsSud = true;
+            if (appt.Orientation.Contains("Est")) this.IsEst = true;
+            if (appt.Orientation.Contains("Ouest")) this.IsOuest = true;
 
             if (this.Batiment.Equals("A"))
                 this.IsBatA = true;
@@ -98,10 +99,13 @@ namespace Lilas.Models
         public Travail InfosIsolationPartielle{ get; set; }
         public Travail InfosRobinets { get; set; }
         public Travail InfosValves { get; set; }
-        public string OrientationNS { get; set; }
-        public string OrientationEO { get; set; }
+        public bool IsNord { get; set; }
+        public bool IsSud { get; set; }
+        public bool IsEst { get; set; }
+        public bool IsOuest { get; set; }
 
         public bool Partager { get; set; }
+        public bool PartagerTravaux { get; set; }
 
 
 

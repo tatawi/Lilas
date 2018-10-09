@@ -95,23 +95,7 @@
         var Etage = $('#ch_etage').val();
         var Porte = $('#ch_porte').val();
         var Type = c_type;
-        var IsDoubleVitrage = false;
-        var IsRobinetsThermo = false;
-        var AutoriserPartager = false;
         var Orientation = c_orient_ns + " " + c_orient_eo;
-
-        if ($('#ch_vitre').checked) {
-            IsDoubleVitrage = true;
-        }
-
-        if ($('#ch_valves').checked) {
-            IsDoubleVitrage = true;
-        }
-
-        if ($('#ch_partager').checked) {
-            AutoriserPartager = true;
-        }
-        
 
 
             var data = {
@@ -122,10 +106,7 @@
                 'paramEtage': Etage,
                 'paramPorte': Porte,
                 'paramType': Type,
-                'paramIsDoubleVitrage': IsDoubleVitrage,
-                'paramIsRobinetsThermo': IsRobinetsThermo,
                 'paramOrientation': Orientation,
-                'paramPartage': AutoriserPartager,
             };
             $.ajax({
                 type: "POST",
@@ -248,11 +229,11 @@ else
     <div id="modal_creerCompte" class="modal">
         <div class="modal-content">
             <div class="row">
-                <div class="col-sm-10 form-group">
-                    <h2>Création d'un nouveau compte</h2>
+                <div class="col-sm-11 form-group">
+                    <h2>Création d'un nouveau compte</h2><hr />
                 </div>
 
-                <div class="col-sm-2 form-group">
+                <div class="col-sm-1 form-group">
                     <span id="closePopUp" class="close">&times;</span>
                 </div>
 
@@ -358,26 +339,6 @@ else
                     </div>
                 </div>
 
-                <!--Double vitrage-->
-                <div class="col-sm-6 form-group">
-                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_vitre">
-                        <input type="checkbox" id="ch_vitre" class="mdl-checkbox__input">
-                        <span class="mdl-checkbox__label normaltext">Double vitrage</span>
-                    </label>
-                </div>
-                <div class="col-sm-6"></div>
-
-                <!--Robinets-->
-                <div class="col-sm-6 form-group">
-                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_valves">
-                        <input type="checkbox" id="ch_valves" class="mdl-checkbox__input">
-                        <span class="mdl-checkbox__label normaltext">Robinets Thermostatiques / Valves automatiques</span>
-                    </label>
-                </div>
-
-
-
-
                 <!--Orientation-->
                 <div class="col-sm-6 form-group">
                     <span>Orientation :</span>
@@ -402,17 +363,11 @@ else
                     </div>
                 </div>
 
-                <div class="col-sm-6 form-group">
-                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ch_partager">
-                        <input type="checkbox" id="ch_partager" class="mdl-checkbox__input" checked>
-                        <span class="mdl-checkbox__label normaltext">Autoriser le partage des données</span>
-                    </label>
-                </div>
 
                 <div class="col-sm-1"></div>
                 <div class="col-sm-10 message message-info">
                     <span>Les champs "Appartement" et "Nom" seront necessaires pour vous identifier.</span><br />
-                    <span>Le partage des données permet de partager les caractéristiques de votre logement (Double vitrage, valves, orientation, type appartement et consommation moyenne annuelle). Vous devez accepter de partager ces informations pour avoir la possibilité de voir ces même informations pour d'autres logements (modifiable par la suite).</span>
+                    <span>Accédez ensuite à la page "Mon appartement" afin de renseigner vos préférences pour le partage de vos données de chauffage avec vos voisins.</span>
                 </div>
                 <div class="col-sm-1"></div>
 

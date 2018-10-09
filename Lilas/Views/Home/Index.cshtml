@@ -1,4 +1,6 @@
-﻿@{
+﻿@model Lilas.Models.VueGeneralViewModel
+
+@{
     ViewBag.Title = "Général";
 }
 
@@ -59,7 +61,7 @@
         var tab_MoyenneType = new Array();
 
 
-            $.getJSON(baseUrl, { paramAnnee: annee, paramApptId: @ViewBag.ApptId }, function (result) {
+            $.getJSON(baseUrl, { paramAnnee: annee, paramApptId: @Model.AppartementId }, function (result) {
                 $.each(result, function (index, itemData) {
                     var Legend = itemData.legend;
                     var Perso = itemData.perso;
@@ -178,7 +180,7 @@
         var tab_Moyenne = new Array();
         var tab_MoyenneType = new Array();
 
-            $.getJSON(baseUrl, {paramApptId: @ViewBag.ApptId }, function (result) {
+            $.getJSON(baseUrl, {paramApptId: @Model.AppartementId }, function (result) {
                 $.each(result, function (index, itemData) {
                     var Annee = itemData.annee;
                     var perso = itemData.maConsoTotale;
@@ -239,7 +241,8 @@
 </div>
 
 
-
+<!--BLOC 1-->
+<!--Consommation courante-->
 <h4 class="col-sm-12 titre-bloc">Ma consommation par rapport à la consommation moyenne de la résidence</h4>
 <div class="sous-partie">
 
@@ -250,24 +253,84 @@
 </div><br /><br />
 
 
-<h4 class="col-sm-12 titre-bloc">Répartition de ma consommation par rapport à la résidence</h4>
-<div class="sous-partie">
-    <div class="row">
-        <div class="col-sm-1">
-        </div>
-        <div class="col-sm-7">
-            <canvas id="ch_ConsoChauffageMoyennePie"></canvas>
-        </div>
-        <div class="col-sm-4">
-            <p><img src=' @Url.Content("~/Content/Icones/")icone_moyenne.png' /> Ma consommation</p>
-            <p><img src=' @Url.Content("~/Content/Icones/")icone_moyenneType.png' /> Consommation moyenne des appartements similaires</p>
-            <p><img src=' @Url.Content("~/Content/Icones/")icone_moyenneTotal.png' /> Consommation moyenne de la résidence</p>
-        </div>
+<!--BLOC 2-->
+<div class="row">
+    <!--repartition-->
+    <div class="col-sm-7">
+    <h4 class="col-sm-12 titre-bloc">Répartition de ma consommation par rapport à la résidence</h4>
+    <div class="sous-partie">
+        <div class="row">
 
+            <div class="col-sm-8">
+                <canvas id="ch_ConsoChauffageMoyennePie"></canvas>
+            </div>
+            <div class="col-sm-4">
+                <p><img src=' @Url.Content("~/Content/Icones/")icone_moyenne.png' /> Ma consommation</p>
+                <p><img src=' @Url.Content("~/Content/Icones/")icone_moyenneType.png' /> Consommation moyenne des appartements similaires</p>
+                <p><img src=' @Url.Content("~/Content/Icones/")icone_moyenneTotal.png' /> Consommation moyenne de la résidence</p>
+            </div>
+
+        </div>
+        </div>
+    </div>
+
+
+    <!--test-->
+    <div class="col-sm-5">
+    <h4 class="col-sm-12 titre-bloc">Economies réalisables</h4>
+    <div class="sous-partie">
+        <div class="row">
+            <div class="col-sm-12">
+
+                @if(Model.IsDonneesAjour)
+                {
+                    if(Model.IsMeilleurDansCategorie)
+                    {
+                        <p>Félicitation, vous êtes l'appartement de la résidence qui consomme le moins dans votre catégorie !</p>
+                    }
+                    else
+                    {
+                        if(Model.listeTravauxAfaire.Count>0)
+                        {
+                            <p>En réalisant @Model.MontantAEngagerPour € de travaux, vous pourriez baissez votre consommation de <span class="texteRouge">@Model.pctEconomiesChauffage</span>. </p>
+                            <p>Voici ce que l'appartement de votre type le plus économique à effectuer en plus comme travaux : </p>
+                            <ul>
+                            @foreach (var tr in Model.listeTravauxAfaire)
+                            {
+                                <li><span class="texteNoir">@tr.type</span></li>
+                            }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p>Certains logements similaires parviennent à avoir une consommation inférieure de <span class="texteRouge">@Model.pctEconomiesChauffage</span> par rapport à la votre.</p>
+
+                        }
+
+
+                    }
+                }
+                else
+                {
+                    <p class="texteRouge">Votre relevé de consommation n'est pas à jour.</p>
+                }
+
+
+
+
+
+
+            </div>
+        
+
+        </div>
+    </div>
     </div>
 </div><br /><br />
 
 
+<!--BLOC 3-->
+<!--evolution conso-->
 <h4 class="col-sm-12 titre-bloc">Evolution des consommations</h4>
 <div class="sous-partie">
     <div class="row">

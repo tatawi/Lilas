@@ -119,6 +119,60 @@ namespace Lilas.Bdd
         }
 
 
+        public bool IsConsoAjour(int apptId)
+        {
+            bool isAjour = true;
+
+            using (var conn = new SqlConnection(this.connectionString))
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand("SELECT Count(*) FROM Consommation WHERE AppartementId=@paramApptId and Year(Date)=@paramYear and Month(Date)=@paramMonth", conn))
+                {
+                    cmd.Parameters.AddWithValue("paramApptId", apptId);
+                    cmd.Parameters.AddWithValue("paramYear", DateTime.Now.Year);
+                    cmd.Parameters.AddWithValue("paramMonth", DateTime.Now.Month);
+
+                    Int32 count = (Int32)cmd.ExecuteScalar();
+                    if (count == 0) isAjour = false;
+                }
+                conn.Close();
+            }
+
+            return isAjour;
+        }
+
+
+
+        public Consommation Get_MinConsoForType(string type)
+        {
+            Consommation conso = new Consommation();
+
+            using (var conn = new SqlConnection(this.connectionString))
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand("select top 1 min([Cuisine] + [Salon]+[Chambre_Salon]+[Chambre1]+[Chambre2]+[Chambre3]) as TotalConso, conso.AppartementId from Consommation conso   join Appartement appt on appt.AppartementId = conso.AppartementId where Year(Date)=@paramYear and Month(Date)=@paramMonth and appt.Type=@paramType group by conso.AppartementId order by TotalConso", conn))
+                {
+                    cmd.Parameters.AddWithValue("paramYear", DateTime.Now.Year);
+                    cmd.Parameters.AddWithValue("paramMonth", DateTime.Now.Month);
+                    cmd.Parameters.AddWithValue("paramType", type);
+
+                    
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            conso.Salon = reader.GetInt32(0);
+                            conso.AppartementId = reader.GetInt32(1);
+                            
+                        }
+                    }
+                }
+                conn.Close();
+            }
+            return conso;
+        }
+
+
 
         //GET - Liste Consommations - par année et par appartement
         public int get_MinimumYear(int apptId)
