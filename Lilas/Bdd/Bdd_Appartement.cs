@@ -161,6 +161,48 @@ namespace Lilas.Bdd
         }
 
 
+        public bool IsAppartementPartageConso(int ApptId)
+        {
+            bool isPresent = true;
+
+            using (var conn = new SqlConnection(this.connectionString))
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand("SELECT Count(*) FROM Appartement WHERE AppartementId=@paramAppartementId And Partager=1", conn))
+                {
+                    cmd.Parameters.Add("@paramAppartementId", SqlDbType.VarChar).Value = ApptId;
+
+                    Int32 count = (Int32)cmd.ExecuteScalar();
+                    if (count == 0) isPresent = false;
+                }
+                conn.Close();
+            }
+
+            return isPresent;
+        }
+
+
+        public bool IsAppartementPartageTravaux(int ApptId)
+        {
+            bool isPresent = true;
+
+            using (var conn = new SqlConnection(this.connectionString))
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand("SELECT Count(*) FROM Appartement WHERE AppartementId=@paramAppartementId And PartagerTravaux=1", conn))
+                {
+                    cmd.Parameters.Add("@paramAppartementId", SqlDbType.VarChar).Value = ApptId;
+
+                    Int32 count = (Int32)cmd.ExecuteScalar();
+                    if (count == 0) isPresent = false;
+                }
+                conn.Close();
+            }
+
+            return isPresent;
+        }
+
+        
 
 
 

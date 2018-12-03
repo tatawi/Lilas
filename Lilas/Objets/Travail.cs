@@ -19,6 +19,8 @@ namespace Lilas.Objets
             this.Entreprise = "";
             this.Contact = "";
             this.TypeAppartement = typeAppt;
+            this._Appt_PartageTravaux = false;
+            this._Appt_AppartementName = "";
         }
 
         public int TravailId { get; set; }
@@ -28,7 +30,9 @@ namespace Lilas.Objets
         public string Entreprise { get; set; }
         public string Contact { get; set; }
         public string TypeAppartement { get; set; }
-    
+
+        public bool _Appt_PartageTravaux { get; set; }
+        public string _Appt_AppartementName { get; set; }
 
 
     }

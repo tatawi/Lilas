@@ -15,6 +15,74 @@ namespace Lilas.Bdd
         // GET 
         //------------------------------------------------------------------------------------------------------------
 
+        public List<Travail> Get_AllTravaux()
+        {
+            List<Travail> listTravauxAppt = new List<Travail>();
+
+            using (var conn = new SqlConnection(this.connectionString))
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand("SELECT TravailId, type, AppartementId, Prix, Entreprise, Contact, TypeAppartement FROM Travaux", conn))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Travail tr = new Travail();
+                            tr.TravailId = reader.GetInt32(0);
+                            tr.type = reader.GetString(1);
+                            tr.AppartementId = reader.GetInt32(2);
+                            tr.Prix = reader.GetInt32(3);
+                            tr.Entreprise = reader.GetString(4);
+                            tr.Contact = reader.GetString(5);
+                            tr.TypeAppartement = reader.GetString(6);
+
+                            listTravauxAppt.Add(tr);
+                        }
+                    }
+                }
+                conn.Close();
+            }
+
+            return listTravauxAppt;
+        }
+
+        public List<Travail> Get_AllTravauxIncludedAppartements()
+        {
+            List<Travail> listTravauxAppt = new List<Travail>();
+
+            using (var conn = new SqlConnection(this.connectionString))
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand("SELECT tr.TravailId, tr.type, tr.AppartementId, tr.Prix, tr.Entreprise, tr.Contact, tr.TypeAppartement ,appt.Appartement, appt.PartagerTravaux FROM Travaux tr join Appartement appt on appt.AppartementId=tr.AppartementId Where tr.Prix <>0", conn))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Travail tr = new Travail();
+                            tr.TravailId = reader.GetInt32(0);
+                            tr.type = reader.GetString(1);
+                            tr.AppartementId = reader.GetInt32(2);
+                            tr.Prix = reader.GetInt32(3);
+                            tr.Entreprise = reader.GetString(4);
+                            tr.Contact = reader.GetString(5);
+                            tr.TypeAppartement = reader.GetString(6);
+                            tr._Appt_AppartementName = reader.GetString(7);
+                            tr._Appt_PartageTravaux = reader.GetBoolean(8);
+
+                            listTravauxAppt.Add(tr);
+                        }
+                    }
+                }
+                conn.Close();
+            }
+
+            return listTravauxAppt;
+        }
+
+
+
         public List<Travail> Get_TravauxAppt(int AppartementId)
         {
             List<Travail> listTravauxAppt= new List<Travail>();

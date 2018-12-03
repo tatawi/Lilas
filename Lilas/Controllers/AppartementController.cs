@@ -36,8 +36,8 @@ namespace Lilas.Controllers
             vm.JePartage = user.Partager;
             vm.list_appts = bdd_appartement.Get_AllAppartements().OrderBy(a=>a.AppartementName).ToList();
             vm.nbAppts = vm.list_appts.Count();
-            vm.nbApptsTotal = 212;
-            vm.nbPartage = vm.list_appts.Where(a => a.Partager == true).ToList().Count();
+            //vm.nbApptsTotal = 212;
+            //vm.nbPartage = vm.list_appts.Where(a => a.Partager == true).ToList().Count();
 
             return View(vm);
         }
@@ -78,6 +78,7 @@ namespace Lilas.Controllers
                 result.Add(
                     new
                     {
+                        appt.AppartementName,
                         appt.Type,
                         Orientation
                     });
@@ -87,8 +88,9 @@ namespace Lilas.Controllers
 
 
         // GET (AJAX) - Récupére les informations de l'appartement
-        public JsonResult GetInformationsTravaux(int paramApptId)
+        public JsonResult GetInformationsTravauxForOthers(int paramApptId)
         {
+            Appartement user = bdd_appartement.Get_AppartementFromName(User.Identity.Name);
             Appartement appt = bdd_appartement.Get_AppartementFromId(paramApptId);
             appt.listeTravaux = bdd_travaux.Get_TravauxAppt(paramApptId);
             var result = new List<object>();
@@ -100,22 +102,22 @@ namespace Lilas.Controllers
             if (appt.IsDoubleVitrage)
             {
                 tr= appt.listeTravaux.FirstOrDefault(t => t.type == EnumTravail.DoubleVitrage);
-                imgName = "trav_doubleVitrage";
+                imgName = EnumImages.DoubleVitrage;
                 nom = "Double vitrage";
 
-                if (appt.PartagerTravaux)
+                if (appt.PartagerTravaux && user.PartagerTravaux)
                     prix = tr.Prix.ToString();
 
                 result.Add(new{imgName,nom,prix,tr.Entreprise,tr.Contact });
             }
 
-            if (appt.IsIsolationTotale)
+            if (appt.IsIsolationTotale && user.PartagerTravaux)
             {
                 tr = appt.listeTravaux.FirstOrDefault(t => t.type == EnumTravail.IsolationTotale);
-                imgName = "trav_isolationTotale";
+                imgName = EnumImages.IsolationTotale;
                 nom = "Isolation intérieure totale";
 
-                if (appt.PartagerTravaux)
+                if (appt.PartagerTravaux && user.PartagerTravaux)
                     prix = tr.Prix.ToString();
 
                 result.Add(new { imgName, nom, prix, tr.Entreprise, tr.Contact });
@@ -124,10 +126,10 @@ namespace Lilas.Controllers
             if (appt.IsIsolationPartielle)
             {
                 tr = appt.listeTravaux.FirstOrDefault(t => t.type == EnumTravail.IsolationPartielle);
-                imgName = "trav_isolationSmall";
+                imgName = EnumImages.IsolationPartielle;
                 nom = "Isolation intérieure partielle";
 
-                if (appt.PartagerTravaux)
+                if (appt.PartagerTravaux && user.PartagerTravaux)
                     prix = tr.Prix.ToString();
 
                 result.Add(new { imgName, nom, prix, tr.Entreprise, tr.Contact });
@@ -136,10 +138,10 @@ namespace Lilas.Controllers
             if (appt.IsRobinetsThermo)
             {
                 tr = appt.listeTravaux.FirstOrDefault(t => t.type == EnumTravail.Robinets);
-                imgName = "trav_thermostatiques";
+                imgName = EnumImages.Robinets;
                 nom = "Robinets Thermostatiques";
 
-                if (appt.PartagerTravaux)
+                if (appt.PartagerTravaux && user.PartagerTravaux)
                     prix = tr.Prix.ToString();
 
                 result.Add(new { imgName, nom, prix, tr.Entreprise, tr.Contact });
@@ -148,10 +150,10 @@ namespace Lilas.Controllers
             if (appt.IsValvesAuto)
             {
                 tr = appt.listeTravaux.FirstOrDefault(t => t.type == EnumTravail.Valves);
-                imgName = "trav_valvesAuto";
+                imgName = EnumImages.Valves;
                 nom = "Valves automatiques";
 
-                if (appt.PartagerTravaux)
+                if (appt.PartagerTravaux && user.PartagerTravaux)
                     prix = tr.Prix.ToString();
 
                 result.Add(new { imgName, nom, prix, tr.Entreprise, tr.Contact });

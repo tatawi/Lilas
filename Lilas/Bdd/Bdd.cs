@@ -10,7 +10,7 @@ namespace Lilas.Bdd
         protected string connectionString;
         public Bdd()
         {
-            this.connectionString = "Data Source=DESKTOP-6L40K11;Initial Catalog=Lilas;Integrated Security=True;MultipleActiveResultSets=True;Application Name=EntityFramework";
+            this.connectionString = "Data Source=LT-SOD00005718;Initial Catalog=Lilas;Integrated Security=True;MultipleActiveResultSets=True;Application Name=EntityFramework";
         }
     }
 }

@@ -92,7 +92,8 @@ C:\Perso\Projets\Lilas\0_LilasGIT\Lilas\bin\fr\System.Web.Razor.resources.dll
 C:\Perso\Projets\Lilas\0_LilasGIT\Lilas\bin\fr\System.Web.WebPages.resources.dll
 C:\Perso\Projets\Lilas\0_LilasGIT\Lilas\bin\fr\System.Web.WebPages.Deployment.resources.dll
 C:\Perso\Projets\Lilas\0_LilasGIT\Lilas\bin\fr\System.Web.WebPages.Razor.resources.dll
-C:\Perso\Projets\Lilas\0_LilasGIT\Lilas\obj\Debug\Lilas.csprojResolveAssemblyReference.cache
 C:\Perso\Projets\Lilas\0_LilasGIT\Lilas\obj\Debug\Lilas.csproj.CoreCompileInputs.cache
 C:\Perso\Projets\Lilas\0_LilasGIT\Lilas\obj\Debug\Lilas.dll
 C:\Perso\Projets\Lilas\0_LilasGIT\Lilas\obj\Debug\Lilas.pdb
+C:\Perso\Projets\Lilas\0_LilasGIT\Lilas\obj\Debug\Lilas.csprojAssemblyReference.cache
+C:\Perso\Projets\Lilas\0_LilasGIT\Lilas\obj\Debug\Lilas.csproj.CopyComplete

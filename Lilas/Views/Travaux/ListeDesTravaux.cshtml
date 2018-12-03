@@ -1,0 +1,161 @@
+﻿@model Lilas.Models.ListeDesTravauxViewModel
+@{
+    ViewBag.Title = "Tous les travaux";
+}
+<script type="text/javascript" src="@Url.Content("~/Scripts/Chart.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/Chart.bundle.min.js")"></script>
+<script>
+
+    $(document).ready(function () {
+        document.getElementById('block_Infos1').style.display = 'none';
+        document.getElementById('block_Infos2').style.display = 'none';
+        DisplayConsoAnneePie();
+    });
+
+
+
+
+    function DisplayConsoAnneePie() {
+        var ctx = document.getElementById('ch_RepartitionTravaux').getContext('2d');
+
+        var NbDoubleVitrage = @Model.NbDoubleVitrage;
+        var NbIsolationPartielle = @Model.NbIsolationPartielle;
+        var NbIsolationTotale = @Model.NbIsolationTotale;
+        var NbRobinets = @Model.NbRobinets;
+        var NbValesAuto = @Model.NbValesAuto;
+
+
+
+
+        var chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [
+                            NbDoubleVitrage,
+                            NbIsolationPartielle,
+                            NbIsolationTotale,
+                            NbRobinets,
+                            NbValesAuto,
+
+                        ],
+                        backgroundColor: ['#F48FB1', '#FFAB91', '#FFCC80', '#E6EE9C', '#C5E1A5',],
+                        label: 'Dataset 1'
+                    }],
+                    labels: [
+                        'Double vitrage',
+                        'Isolation partielle',
+                        'Isolation totale',
+                        'Robinets thermostatiques',
+                        'Valves automatiques'
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        position: 'left',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Répartition'
+                    },
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
+                }
+            });
+    }
+
+
+</script>
+
+
+<!--TITRE-->
+<div>
+    <h1 class="display-4">
+        Tous les travaux
+    </h1>
+</div>
+
+
+<h4 id="block_Infos1" class="col-sm-12 titre-bloc">Filtre</h4>
+<div id="block_Infos2" class="sous-partie">
+    <div class="row">
+
+        <!--Nom-->
+        <div class="col-sm-4">
+            <span>Appartement :</span>
+            <div class="valeur">
+                <span id="nomAppartement"></span>
+            </div>
+        </div>
+
+
+
+    </div>
+</div><br />
+
+
+<h4 id="block_Result1" class="col-sm-12 titre-bloc">Liste des travaux</h4>
+<div id="block_Result2" class="sous-partie">
+    <div class="row">
+
+        <!--Nom-->
+        <div class="col-sm-7">
+           <table id="tab_ConsoChauffage" class="mdl-data-table mdl-js-data-table">
+                    <thead>
+                        <tr>
+                            <th class="mdl-data-table__cell--non-numeric">Type</th>
+                            <th class="mdl-data-table__cell--non-numeric">Destination</th>
+                            <th class="mdl-data-table__cell--non-numeric">Appartement</th>
+                            <th class="mdl-data-table__cell--non-numeric">Coût</th>
+                            <th class="mdl-data-table__cell--non-numeric">Entreprise</th>
+                            <th class="mdl-data-table__cell--non-numeric">Contact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var work in Model.listeTravaux)
+                        {
+                            <tr class="@work.type">
+                                <td>
+                                    <img src="@Url.Content("~/Content/Icones/")@(work.type).png" />
+                                </td>
+                                <td>@work.TypeAppartement</td>
+                                <td>@work._Appt_AppartementName</td>
+                                @if(Model.PartageTravaux && work._Appt_PartageTravaux)
+                                {
+                                    <td>@work.Prix €</td>
+                                }
+                                else
+                                {
+                                    <td>- €</td>
+                                }
+                                <td>@work.Entreprise</td>
+                                <td>@work.Contact</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+
+
+
+
+
+
+        </div>
+
+
+        <div class="col-sm-5">
+            <canvas id="ch_RepartitionTravaux"></canvas>
+        </div>
+
+
+
+    </div>
+</div><br />
+
+
+
+

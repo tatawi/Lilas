@@ -25,20 +25,20 @@
 
 
 
-    function AfficherInfosAppt(val) {
+    function AfficherInfosAppt(val, partageOk) {
 
         var Partage = '@Model.JePartage'
 
 
         document.getElementById('block_Infos1').style.display = 'block';
         document.getElementById('block_Infos2').style.display = 'block';
-        document.getElementById('block_TRtravaux').style.display = 'block';
-        document.getElementById('block_travaux').style.display = 'block';
+        document.getElementById('block_TRtravaux').style.display = 'none';
+        document.getElementById('block_travaux').style.display = 'none';
 
         RefreshInformationsAppartement(val);
         RefreshTableauTravaux(val);
 
-        if (Partage=='True') {
+        if (Partage == 'True' && partageOk == 'True') {
             document.getElementById('block_ConsoCourante1').style.display = 'block';
             document.getElementById('block_ConsoCourante2').style.display = 'block';
             document.getElementById('block_Conso1').style.display = 'block';
@@ -46,6 +46,12 @@
 
             RefreshTableauConsoChauffage(val);
             RefreshTableauConsoChauffageAnnee(val);
+        }
+        else {
+            document.getElementById('block_ConsoCourante1').style.display = 'none';
+            document.getElementById('block_ConsoCourante2').style.display = 'none';
+            document.getElementById('block_Conso1').style.display = 'none';
+            document.getElementById('block_Conso2').style.display = 'none';
         }
 
     }
@@ -60,9 +66,12 @@
 
             $.getJSON(baseUrl, {paramApptId: apptId }, function (result) {
                 $.each(result, function (index, itemData) {
-
+                    Nom = itemData.AppartementName;
                     Type = itemData.Type;
                     Orientation = itemData.Orientation;
+
+
+                    document.getElementById('nomAppartement').innerText = Nom;
 
                     if (Type = "T2") {
                         document.getElementById('typeT2').style.display = 'block';
@@ -93,31 +102,34 @@
 
 
      function RefreshTableauTravaux(apptId) {
-        var baseUrl = '@Url.Content("~/Appartement/GetInformationsTravaux/")';
+        var baseUrl = '@Url.Content("~/Appartement/GetInformationsTravauxForOthers/")';
         var imgUrl = '@Url.Content("~/Content/Icones/")';
-        $('#tab_travaux > tbody').empty();
+         $('#tab_travaux > tbody').empty();
 
-            $.getJSON(baseUrl, {paramApptId: apptId }, function (result) {
-                $.each(result, function (index, itemData) {
-                    var Img = itemData.imgName;
-                    var Nom = itemData.nom;
-                    var Prix = itemData.prix;
-                    var Entreprise = itemData.Entreprise;
-                    var Contact = itemData.Contact;
+         $.getJSON(baseUrl, { paramApptId: apptId }, function (result) {
+             $.each(result, function (index, itemData) {
+                 var Img = itemData.imgName;
+                 var Nom = itemData.nom;
+                 var Prix = itemData.prix;
+                 var Entreprise = itemData.Entreprise;
+                 var Contact = itemData.Contact;
 
-                    var row = "<tr>";
-                    row += "<td><img src='" + imgUrl + Img+ ".png' /></td>";
-                    row += "<td>" + Nom + "</td>";
-                    row += "<td>" + Prix + " €</td>";
-                    row += "<td>" + Entreprise + "</td>";
-                    row += "<td>" + Contact + "</td>";
-                    row += "</tr";
 
-                    $('#tab_travaux > tbody').append(row);
+                 var row = "<tr>";
+                 row += "<td><img src='" + imgUrl + Img + ".png' /></td>";
+                 row += "<td>" + Nom + "</td>";
+                 row += "<td>" + Prix + " €</td>";
+                 row += "<td>" + Entreprise + "</td>";
+                 row += "<td>" + Contact + "</td>";
+                 row += "</tr";
 
-                });
 
-        });
+                 $('#tab_travaux > tbody').append(row);
+                 document.getElementById('block_TRtravaux').style.display = 'block';
+                 document.getElementById('block_travaux').style.display = 'block';
+             });
+
+         });
 
     };
 
@@ -312,12 +324,14 @@
                     @if (Model.list_appts[nb_appt].Partager)
                     {
                         <td>Oui</td>
+                        <td><img src='@Url.Content("~/Content/Icones/")ic_graph_orange.png' onclick='AfficherInfosAppt(@Model.list_appts[nb_appt].AppartementId, "True")' /></td>
                     }
                     else
                     {
                         <td><span class="texteRouge">Non</span></td>
+                        <td><img src='@Url.Content("~/Content/Icones/")ic_graph_orange.png' onclick='AfficherInfosAppt(@Model.list_appts[nb_appt].AppartementId, "False")' /></td>
                     }
-                    <td><img src='@Url.Content("~/Content/Icones/")ic_graph_orange.png' onclick='AfficherInfosAppt(@Model.list_appts[nb_appt].AppartementId)' /></td>
+                    
 
                 </tr>
             }
@@ -335,8 +349,16 @@
 
             <div class="row">
 
+                <!--Nom-->
+                <div class="col-sm-4">
+                    <span>Appartement :</span>
+                    <div class="valeur">
+                        <span id="nomAppartement"></span>
+                    </div>
+                </div>
+
                 <!--Type-->
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                     <span>Type :</span>
                     <div class="valeur">
 
@@ -357,7 +379,7 @@
                 </div>
 
                 <!--Orientation-->
-                <div class="col-sm-6 form-group">
+                <div class="col-sm-4 form-group">
                     <span>Orientation :</span>
                     <div class="valeur">
                         <img id="img_orientation" src=""/>

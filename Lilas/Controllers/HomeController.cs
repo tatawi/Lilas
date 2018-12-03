@@ -186,26 +186,31 @@ namespace Lilas.Controllers
         // GET (AJAX) - Chargement du tableau de consommation de chauffage de l'année
         public JsonResult GetListConsoChauffageAnnee(int paramAnnee, int paramApptId)
         {
-            List<Consommation> list_Conso = this.CalculerListeConsoPersoAnnee(paramAnnee, paramApptId);
-
             var result = new List<object>();
-            foreach (Consommation info in list_Conso)
-            {
-                System.Globalization.DateTimeFormatInfo mfi = new System.Globalization.DateTimeFormatInfo();
-                string Mois = mfi.GetMonthName(info.Date.Month).ToString();
+            bool partageOk = bdd_appartement.IsAppartementPartageConso(paramApptId);
 
-                result.Add(
-                    new
-                    {
-                        Mois,
-                        info.Cuisine,
-                        info.Salon,
-                        info.Chambre_Salon,
-                        info.Chambre1,
-                        info.Chambre2,
-                        info.Chambre3,
-                        info.Sdb
-                    });
+            if (partageOk)
+            {
+                List<Consommation> list_Conso = this.CalculerListeConsoPersoAnnee(paramAnnee, paramApptId);
+
+                foreach (Consommation info in list_Conso)
+                {
+                    System.Globalization.DateTimeFormatInfo mfi = new System.Globalization.DateTimeFormatInfo();
+                    string Mois = mfi.GetMonthName(info.Date.Month).ToString();
+
+                    result.Add(
+                        new
+                        {
+                            Mois,
+                            info.Cuisine,
+                            info.Salon,
+                            info.Chambre_Salon,
+                            info.Chambre1,
+                            info.Chambre2,
+                            info.Chambre3,
+                            info.Sdb
+                        });
+                }
             }
 
             return Json(result, JsonRequestBehavior.AllowGet);
@@ -241,35 +246,39 @@ namespace Lilas.Controllers
         public JsonResult GetListConsoChauffageTotal(int paramApptId)
         {
             List<Consommation> list_Recap = new List<Consommation>();
-            
-
-            int currentYear = DateTime.Now.Year;
-            int minYear = bdd_conso.get_MinimumYear(paramApptId);
-
-            for (int annee = minYear; annee <= currentYear; annee++)
-            {
-                Consommation conso = bdd_conso.get_ConsommationForYearAndAppt(annee, paramApptId);
-                list_Recap.Add(conso);
-            }
-
             var result = new List<object>();
-            foreach (Consommation info in list_Recap)
-            {
-                int Annee = info.Date.Year;
+            bool partageOk = bdd_appartement.IsAppartementPartageConso(paramApptId);
 
-                result.Add(
-                    new
-                    {
-                        Annee,
-                        info.Cuisine,
-                        info.Salon,
-                        info.Chambre_Salon,
-                        info.Chambre1,
-                        info.Chambre2,
-                        info.Chambre3,
-                        info.Sdb
-                    });
+            if(partageOk)
+            {
+                int currentYear = DateTime.Now.Year;
+                int minYear = bdd_conso.get_MinimumYear(paramApptId);
+
+                for (int annee = minYear; annee <= currentYear; annee++)
+                {
+                    Consommation conso = bdd_conso.get_ConsommationForYearAndAppt(annee, paramApptId);
+                    list_Recap.Add(conso);
+                }
+
+                foreach (Consommation info in list_Recap)
+                {
+                    int Annee = info.Date.Year;
+
+                    result.Add(
+                        new
+                        {
+                            Annee,
+                            info.Cuisine,
+                            info.Salon,
+                            info.Chambre_Salon,
+                            info.Chambre1,
+                            info.Chambre2,
+                            info.Chambre3,
+                            info.Sdb
+                        });
+                }
             }
+           
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
