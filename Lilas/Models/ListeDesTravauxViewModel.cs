@@ -26,6 +26,7 @@ namespace Lilas.Models
         public int NbDoubleVitrage { get; set; }
         public int NbRobinets { get; set; }
         public int NbValesAuto { get; set; }
+        public string Trie { get; set; }
 
 
 

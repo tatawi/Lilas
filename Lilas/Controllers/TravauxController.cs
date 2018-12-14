@@ -28,6 +28,51 @@ namespace Lilas.Controllers
         // GET: Travaux
         public ActionResult ListeDesTravaux()
         {
+            ListeDesTravauxViewModel vm;
+            string trie = (string)TempData["ColonneTrie"];
+
+            if(trie == null)
+            {
+                vm = this.majVMtravaux();
+                TempData["ViewModel_ListeDesTravaux"] = vm;
+            }
+            else
+            {
+                vm = (ListeDesTravauxViewModel)TempData["ViewModel_ListeDesTravaux"];
+                TempData["ViewModel_ListeDesTravaux"] = vm;
+            }
+                
+
+            #region trie
+
+            switch(trie)
+            {
+                case "type":
+                    vm.listeTravaux = vm.listeTravaux.OrderBy(a => a.type).ToList();
+                    break;
+                case "taille":
+                    vm.listeTravaux = vm.listeTravaux.OrderBy(a => a.TypeAppartement).ToList();
+                    break;
+                case "appt":
+                    vm.listeTravaux = vm.listeTravaux.OrderBy(a => a._Appt_AppartementName).ToList();
+                    break;
+                case "prix":
+                    vm.listeTravaux = vm.listeTravaux.OrderBy(a => a.Prix).ToList();
+                    break;
+                case "nom":
+                    vm.listeTravaux = vm.listeTravaux.OrderBy(a => a.Entreprise).ToList();
+                    break;
+            }
+
+
+            #endregion
+
+            return View(vm);
+        }
+
+
+        private ListeDesTravauxViewModel majVMtravaux()
+        {
             ListeDesTravauxViewModel vm = new ListeDesTravauxViewModel();
             Appartement user = bdd_appartement.Get_AppartementFromName(User.Identity.Name);
 
@@ -42,7 +87,7 @@ namespace Lilas.Controllers
 
             foreach (var tr in vm.listeTravaux)
             {
-                switch(tr.type)
+                switch (tr.type)
                 {
                     case EnumTravail.IsolationTotale: tr.type = EnumImages.IsolationTotale; break;
                     case EnumTravail.IsolationPartielle: tr.type = EnumImages.IsolationPartielle; break;
@@ -50,10 +95,21 @@ namespace Lilas.Controllers
                     case EnumTravail.Robinets: tr.type = EnumImages.Robinets; break;
                     case EnumTravail.Valves: tr.type = EnumImages.Valves; break;
                 }
-
             }
 
-            return View(vm);
+
+            return vm;
         }
+
+
+        [HttpPost]
+        public ActionResult ListeDesTravaux(ListeDesTravauxViewModel vm)
+        {
+            TempData["ColonneTrie"] = vm.Trie;
+
+            return RedirectToAction("ListeDesTravaux");
+        }
+
+
     }
 }

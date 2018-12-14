@@ -13,6 +13,15 @@
     });
 
 
+    function Trier(trie) {
+        $('#Trie').val(trie);
+        showGif();
+        $("form")[0].submit();
+    }
+
+    
+                
+                
 
 
     function DisplayConsoAnneePie() {
@@ -70,11 +79,16 @@
 
 </script>
 
+@using (Html.BeginForm("ListeDesTravaux", "Travaux", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.HiddenFor(m => m.Trie)
+
+    
 
 <!--TITRE-->
 <div>
     <h1 class="display-4">
-        Tous les travaux
+        Tous les travaux de la résidence
     </h1>
 </div>
 
@@ -106,12 +120,12 @@
            <table id="tab_ConsoChauffage" class="mdl-data-table mdl-js-data-table">
                     <thead>
                         <tr>
-                            <th class="mdl-data-table__cell--non-numeric">Type</th>
-                            <th class="mdl-data-table__cell--non-numeric">Destination</th>
-                            <th class="mdl-data-table__cell--non-numeric">Appartement</th>
-                            <th class="mdl-data-table__cell--non-numeric">Coût</th>
-                            <th class="mdl-data-table__cell--non-numeric">Entreprise</th>
-                            <th class="mdl-data-table__cell--non-numeric">Contact</th>
+                            <th class="mdl-data-table__cell--non-numeric trieTab" onclick="Trier('type');">Type</th>
+                            <th class="mdl-data-table__cell--non-numeric trieTab" onclick="Trier('taille');">Taille</th>
+                            <th class="mdl-data-table__cell--non-numeric trieTab" onclick="Trier('appt');">Appartement</th>
+                            <th class="mdl-data-table__cell--non-numeric trieTab" onclick="Trier('prix');">Coût</th>
+                            <th class="mdl-data-table__cell--non-numeric trieTab" onclick="Trier('nom');">Entreprise / Artisan</th>
+                            <th class="mdl-data-table__cell--non-numeric">Contact / Infos</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -123,7 +137,7 @@
                                 </td>
                                 <td>@work.TypeAppartement</td>
                                 <td>@work._Appt_AppartementName</td>
-                                @if(Model.PartageTravaux && work._Appt_PartageTravaux)
+                                @if (Model.PartageTravaux && work._Appt_PartageTravaux)
                                 {
                                     <td>@work.Prix €</td>
                                 }
@@ -159,3 +173,4 @@
 
 
 
+}

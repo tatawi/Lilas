@@ -269,4 +269,9 @@ li {
     color: #ed8000;
 }
 
+.trieTab:hover {
+    text-decoration: underline;
+    font-style: italic;
+}
+
 

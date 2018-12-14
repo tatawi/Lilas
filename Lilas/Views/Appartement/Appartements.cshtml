@@ -312,23 +312,36 @@
 
         <table class="mdl-data-table mdl-js-data-table">
             <tr>
-                <th>Appartement</th>
-                <th>Partage</th>
+                <th>Appt</th>
+                <th>Travaux</th>
+                <th>Conso</th>
                 <th>Afficher</th>
             </tr>
+
 
             @for (var nb_appt = 0; nb_appt < Model.list_appts.Count(); nb_appt++)
             {
                 <tr>
                     <td>@Model.list_appts[nb_appt].AppartementName</td>
+
+                    @if (Model.list_appts[nb_appt].PartagerTravaux)
+                    {
+                        <td><img src='@Url.Content("~/Content/Icones/")ic_partageOK.png'/></td>
+                    }
+                    else
+                    {
+                        <td><img src='@Url.Content("~/Content/Icones/")ic_NoPartage.png'/></td>
+                    }
+
+
                     @if (Model.list_appts[nb_appt].Partager)
                     {
-                        <td>Oui</td>
+                        <td><img src='@Url.Content("~/Content/Icones/")ic_partageOK.png'/></td>
                         <td><img src='@Url.Content("~/Content/Icones/")ic_graph_orange.png' onclick='AfficherInfosAppt(@Model.list_appts[nb_appt].AppartementId, "True")' /></td>
                     }
                     else
                     {
-                        <td><span class="texteRouge">Non</span></td>
+                        <td><img src='@Url.Content("~/Content/Icones/")ic_NoPartage.png'/></td>
                         <td><img src='@Url.Content("~/Content/Icones/")ic_graph_orange.png' onclick='AfficherInfosAppt(@Model.list_appts[nb_appt].AppartementId, "False")' /></td>
                     }
                     
