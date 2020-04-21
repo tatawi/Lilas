@@ -17,6 +17,7 @@ namespace Lilas.Models
             IsDonneesAjour = false;
         }
 
+        public int Annee { get; set; }
         public int AppartementId { get; set; }
 
         public String Type { get; set; }

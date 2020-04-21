@@ -49,6 +49,7 @@ namespace Lilas.Controllers
             Appartement user = bdd_appartement.Get_AppartementFromName(User.Identity.Name);
             vm.AppartementId = user.AppartementId;
             vm.Type = user.Type;
+            vm.Annee = DateTime.Now.Year;
 
             vm.IsDonneesAjour = bdd_conso.IsConsoAjour(user.AppartementId);
             if(vm.IsDonneesAjour)
@@ -109,7 +110,7 @@ namespace Lilas.Controllers
             Consommation maConso = bdd_conso.get_ConsommationForYearAndAppt(paramAnnee, paramApptId);
             Consommation consoMoyenne = this.CalculerListeConsoMoyenneAnnee(paramAnnee);
             Consommation consoMoyenneType = (Consommation)TempData["consoMoyenneType"];
-            Consommation consoFaibleType = (Consommation)TempData["consoMoyenneType"];
+            //Consommation consoFaibleType = (Consommation)TempData["consoMoyenneType"];
 
 
             var result = new List<object>();
@@ -178,6 +179,7 @@ namespace Lilas.Controllers
             Appartement user= bdd_appartement.Get_AppartementFromName(User.Identity.Name);
             ViewBag.ApptId = user.AppartementId;
             ViewBag.Type = user.Type;
+            ViewBag.Annee = DateTime.Now.Year;
 
             return View();
         }
@@ -411,23 +413,27 @@ namespace Lilas.Controllers
             foreach (Appartement app in liste_Appt)
             {
                 Consommation conso_appt = bdd_conso.get_ConsommationForYearAndAppt(paramAnnee, app.AppartementId);
-                list_Conso.Add(conso_appt);
-
-                if (type == app.Type)
+                if(conso_appt.isConsoValide())
                 {
-                    list_ConsoType.Add(conso_appt);
-                }
+                    list_Conso.Add(conso_appt);
+                    if (type == app.Type)
+                    {
+                        list_ConsoType.Add(conso_appt);
+                    }
+                }   
             }
 
             //Consos moyenne
             int nbconsos = list_Conso.Count();
+            int nbconsosT3 = list_Conso.Where(c=>c.Chambre2>0).Count();
+            int nbconsosT4 = list_Conso.Where(c => c.Chambre3 > 0).Count();
             if (nbconsos == 0) nbconsos = 1;
             consoMoyenne.Cuisine = list_Conso.Sum(m => m.Cuisine) / nbconsos;
             consoMoyenne.Salon = list_Conso.Sum(m => m.Salon) / nbconsos;
             consoMoyenne.Chambre_Salon = list_Conso.Sum(m => m.Chambre_Salon) / nbconsos;
             consoMoyenne.Chambre1 = list_Conso.Sum(m => m.Chambre1) / nbconsos;
-            consoMoyenne.Chambre2 = list_Conso.Sum(m => m.Chambre2) / nbconsos;
-            consoMoyenne.Chambre3 = list_Conso.Sum(m => m.Chambre3) / nbconsos;
+            consoMoyenne.Chambre2 = list_Conso.Sum(m => m.Chambre2) / nbconsosT3;
+            consoMoyenne.Chambre3 = list_Conso.Sum(m => m.Chambre3) / nbconsosT4;
             consoMoyenne.Sdb = list_Conso.Sum(m => m.Sdb) / nbconsos;
 
             //Conso moyenne type

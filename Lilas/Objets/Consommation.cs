@@ -33,6 +33,11 @@ namespace Lilas.Objets
             return this.Cuisine + this.Salon + this.Chambre_Salon + this.Chambre1 + this.Chambre2 + this.Chambre3 + this.Sdb;
         }
 
+        public bool isConsoValide()
+        {
+            return (this.Cuisine>0 || this.Salon > 0 || this.Chambre_Salon > 0 || this.Chambre1 > 0 || this.Chambre2 > 0 || this.Chambre3 > 0 || this.Sdb > 0);
+        }
+
 
     }
 }

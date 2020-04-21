@@ -457,7 +457,7 @@
     <h1 class="display-4">
         Ma consommation pour
         <img class="hvr-grow" onClick="ChangerAnneeViaImage(-1)" src='@Url.Content("~/Content/Previous_Orange_50.png")' />
-        <span class="display-4" id="chp_anneeR" name="Annee" type="text">2018</span>
+        <span class="display-4" id="chp_anneeR" name="Annee" type="text">@ViewBag.Annee</span>
         <img class="hvr-grow" onClick="ChangerAnneeViaImage(1)" src='@Url.Content("~/Content/Next_Orange_50.png")' />
     </h1>
 </div>
